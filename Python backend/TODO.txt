@@ -1,0 +1,1 @@
+1. image_verification.py se response return karna hy (send product id's of the products whos userID is different from the logged in user)

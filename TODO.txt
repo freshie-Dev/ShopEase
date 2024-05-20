@@ -1,0 +1,2 @@
+1. upload each a product with same image with 2 different brands.
+2. do verification from a seller account to check for duplicate images.
