@@ -33,6 +33,7 @@
     "react-spinners": "^0.13.8",
     "recharts": "^2.12.6",
     "slick-carousel": "^1.8.1",
+    "stripe": "^15.7.0",
     "styled-components": "^6.1.8",
     "three": "^0.163.0",
     "valtio": "^1.13.2",

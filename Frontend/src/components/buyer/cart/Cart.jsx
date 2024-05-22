@@ -10,7 +10,7 @@ const Cart = () => {
   const {customizedImage} = useCartContext()
   const { cartState, increaseQuantity, decreaseQuantity, removeCartItem } =
     useCartContext();
-  if (cartState.totalPrice === 0) {
+  if (cartState.totalItems === 0) {
     return (
       <div className="mt-[100px] h-[80vh] bg-[#F0D8C0] flex flex-col justify-center items-center">
         <p>Currently you have no items in Cart</p>

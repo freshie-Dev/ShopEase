@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 const Total = () => {
   const navigate = useNavigate();
+  const {checkout} = useCartContext()
   const { cartState } = useCartContext();
   return (
     <div className="flex w-full mt-12">
@@ -40,6 +41,7 @@ const Total = () => {
         
         {/* <NavLink to="/buyer/checkout" > go too</NavLink> */}
         <NavLink to="/buyer/checkout"><CustomButton className="border-white mt-10" >Checkout</CustomButton></NavLink>
+        {/* <CustomButton onClick={checkout} className="border-white mt-10" >Checkout</CustomButton> */}
         
 
       </div>

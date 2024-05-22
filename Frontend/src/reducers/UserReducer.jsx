@@ -3,12 +3,12 @@ const reducer = (state, action) => {
     switch (key) {
       case "SAVE_USER_INFO":
   
-        const { _id, username, email, usertype, cart, orders, token } = action.payload;
+        const { _id, username, email, usertype, cart, orders, address, token } = action.payload;
         
   
         localStorage.setItem(
           "userinfo",
-          JSON.stringify({ _id, username, email, usertype, cart, orders })
+          JSON.stringify({ _id, username, email, usertype, cart, orders, address })
         );
         localStorage.setItem("token", token);
 
@@ -19,6 +19,7 @@ const reducer = (state, action) => {
             email,
             usertype,
             cart,
+            address,
             orders,
           },
         };

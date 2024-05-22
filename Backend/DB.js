@@ -114,6 +114,13 @@ const userSchema = new Schema({
         type: String,
         // required: true
     },
+    address: [{
+        area: String,
+        city: String,
+        zip_code: String,
+        email: String,
+        customerName: String,
+    }],
     createdAt: {
         type: Date,
         default: Date.now

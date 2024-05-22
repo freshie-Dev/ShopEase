@@ -11,6 +11,7 @@ const initialState = {
     usertype: "",
     cart: "",
     orders: "",
+    
   },
 };
 
@@ -25,13 +26,13 @@ const UserProvider = ({ children }) => {
       const response = await axios.post(`${baseUrl}auth/`, signUpCredentials);
       const data = response.data;
       const {
-        user: { _id, username, email, orders, cart, usertype },
+        user: { _id, username, email, orders, cart, usertype, address },
         token
       } = data;
 
       dispatch({
         type: "SAVE_USER_INFO",
-        payload: { _id, username, email, orders, cart, usertype, token },
+        payload: { _id, username, email, orders, cart, usertype, address, token },
       });
 
       return {success: "true", userType: usertype};
@@ -50,19 +51,18 @@ const UserProvider = ({ children }) => {
         loginCredentials
       );
       const data = response.data;
-      // console.log(data.user)
+      console.log(data.user)
       const {
-        user: { _id, username, email, orders, cart, usertype },
+        user: { _id, username, email, orders, cart, usertype, address },
         token,
       } = data;
 
       dispatch({
         type: "SAVE_USER_INFO",
-        payload: { _id, username, email, orders, cart, usertype, token },
+        payload: { _id, username, email, orders, cart, usertype, token, address },
       });
     
       return {success: "true", userType: usertype};
-      return {success: "true", userType: "seller"};
     } catch (error) {
       return { success: false, message: error.response.data.message};
     }

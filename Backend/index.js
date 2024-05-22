@@ -4,6 +4,8 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
+// Use express.json() middleware to parse JSON request bodies
+// app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -20,10 +22,11 @@ app.use('/products', require('./routes/productRoutes.js'));
 //! 2: User Route 
 app.use('/auth', require('./routes/userRoutes.js'));
 
+//! 3: User Route 
+app.use('/payment', require('./routes/paymentRoutes.js'));
 
-//! 3: Image route
+//! 4: Image route
 // Serve static files from the 'upload/images' directory
-console.log(__dirname)
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 let port = process.env.PORT;
