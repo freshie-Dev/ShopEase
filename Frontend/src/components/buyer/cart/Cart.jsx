@@ -10,16 +10,20 @@ const Cart = () => {
   const {customizedImage} = useCartContext()
   const { cartState, increaseQuantity, decreaseQuantity, removeCartItem } =
     useCartContext();
-  if (cartState.totalItems === 0) {
+    
+    const cart = cartState.cart.length !== 0  ? cartState.cart : JSON.parse(localStorage.getItem('cart'));
+
+  // if (cartState.totalItems === 0) {
+  if (cartState.cart.length === 0) {
     return (
-      <div className="mt-[100px] h-[80vh] bg-[#F0D8C0] flex flex-col justify-center items-center">
-        <p>Currently you have no items in Cart</p>
-        <NavLink
-          className="my-2 text-2xl font-bold   p-2 mx-4   bg-transparent border-[2px] border-black hover:bg-[#000] hover:text-[#d9a470] rounded-md  duration-300"
-          to="/buyer/products"
+      <div className="mt-[100px] h-[60vh] flex flex-col justify-center bg-[#F0D8C0] items-center">
+        <h1 className="py-2 my-3 font-extrabold text-xl md:text-2xl text-[white]">Currently your cart is empty</h1>
+        <CustomButton
+          className="w-[200px] md:w-[350px]"
+          onClick={()=> navigate("/buyer/products")}
         >
           Go Shopping
-        </NavLink>
+        </CustomButton>
       </div>
     );
   }
@@ -33,8 +37,8 @@ const Cart = () => {
       </h1>
       <div className="rounded-md p-3  justtify-center flex flex-col ">
         <div className="h-[4px]  bg-[#d9a470] rounded-[100%] px-[50px]"></div>
-        {cartState.cart &&
-          cartState.cart.map((cartItem) => {
+        {cart &&
+          cart.map((cartItem) => {
             const { id, _id, title, max, size, price, quantity, color, image, customizable, customizedImage } =
               cartItem;
               console.log(customizable)

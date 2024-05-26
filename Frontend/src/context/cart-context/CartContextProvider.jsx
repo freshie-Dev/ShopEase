@@ -1,150 +1,3 @@
-// import React, {
-//   useState,
-//   useContext,
-//   useEffect,
-//   createContext,
-//   useReducer,
-// } from "react";
-// import reducer from "../../reducers/CartReducer";
-
-// import axios from "axios"
-
-// const CartContext = createContext();
-
-// const localStorageCartData = () => {
-//   const cartData = localStorage.getItem("cart");
-//   if (cartData) {
-//     return JSON.parse(cartData);
-//   } else {
-//     return [];
-//   }
-// };
-
-// const initialState = {
-//   cart: [],
-//   totalItems: "",
-//   totalPrice: "",
-//   shippingFee: 5,
-//   orderTotal: "",
-// };
-
-// const CartProvider = ({ children }) => {
-//   const [customizedImage, setCustomizedImage] = useState();
-//   const [cartState, dispatch] = useReducer(reducer, initialState);
-
-//   // const [quantity, setQuantity] = React.useState(1);
-//   // const addQuantity = (value) => {
-//   //     setQuantity(value + 1);
-//   // }
-//   // const subtractQuantity = (value) => {
-//   //     if (value > 1) {
-//   //         setQuantity(value - 1);
-//   //     }
-//   // }
-
-//   //! Add to cart function, has the data of 1 product from single product page
-//   const addToCart = (
-//     id,
-//     color,
-//     size,
-//     quantity,
-//     product,
-//     customizedImage,
-//     customSize
-//   ) => {
-//     dispatch({
-//       type: "ADD_TO_CART",
-//       payload: {
-//         id,
-//         color,
-//         size,
-//         quantity,
-//         product,
-//         customizedImage,
-//         customSize,
-//       },
-//     });
-//     setCustomizedImage();
-//     // setQuantity(1);
-//   };
-
-//   const increaseQuantity = (id) => {
-//     dispatch({ type: "INCREASE_QUANTITY", payload: id });
-//   };
-
-//   const decreaseQuantity = (id) => {
-//     dispatch({ type: "DECREASE_QUANTITY", payload: id });
-//   };
-
-//   const removeCartItem = (id) => {
-//     dispatch({ type: "REMOVE_CART_ITEM", payload: id });
-//   };
-
-
-
-//   const checkout = async ()=> {
-//     try {
-//       const products = [
-//         {id: 1, quantity: 2},
-//         {id: 2, quantity: 5},
-//       ];
-//       const response = await axios.post('http://localhost:3002/payment/', products, {
-//         headers: {
-//           'Content-Type': 'application/json'
-//         }
-//       });
-  
-//       const data = response.data.url;
-//       console.log(data);
-//       window.location.href = data;
-
-//     } catch(error) {
-//       console.log(error);
-//     }
-//   }
-
-
-//   useEffect(() => {
-//     console.log(cartState);
-//   }, [cartState]);
-//   //! Adding cart to local storage
-//   useEffect(() => {
-//     dispatch({ type: "CART_TOTAL_ITEMS" });
-//     dispatch({ type: "CART_TOTAL_PRICE" });
-//     // localStorage.setItem('cart', JSON.stringify(state.cart));
-//   }, [cartState.cart]);
-
-//   return (
-//     <CartContext.Provider
-//       value={{
-//         cartState,
-//         ...cartState,
-//         addToCart,
-//         // clearCart,
-//         // quantity,
-//         // setQuantity,
-//         // addQuantity,
-//         // subtractQuantity,
-//         removeCartItem,
-//         increaseQuantity,
-//         decreaseQuantity,
-//         customizedImage,
-//         setCustomizedImage,
-//         checkout,
-//         saveAddress,
-//       }}
-//     >
-//       {children}
-//     </CartContext.Provider>
-//   );
-// };
-
-// const useCartContext = () => {
-//   return useContext(CartContext);
-// };
-
-// export { CartProvider };
-// export default useCartContext;
 
 import React, {
   useState,
@@ -220,7 +73,9 @@ const CartProvider = ({ children }) => {
 
   const checkout = async () => {
     try {
-      const products = cartState.cart.map((item) => ({
+      const token = localStorage.getItem('token');
+      const items = cartState.cart.length > 0 ? cartState.cart : localStorageCartData()
+      const products = items.map((item) => ({
         id: item._id,
         quantity: item.quantity,
       }));
@@ -228,14 +83,15 @@ const CartProvider = ({ children }) => {
       const response = await axios.post('http://localhost:3002/payment/', products, {
         headers: {
           'Content-Type': 'application/json',
+          token
         },
       });
 
-      const data = response.data.url;
+      const data = response.data;
       console.log(data);
-      window.location.href = data;
+      // window.location.href = data.url;
     } catch (error) {
-      console.log(error);
+      console.log("Error while Checking out", error.message);
     }
   };
 
@@ -283,7 +139,12 @@ const CartProvider = ({ children }) => {
   useEffect(() => {
     dispatch({ type: "CART_TOTAL_ITEMS" });
     dispatch({ type: "CART_TOTAL_PRICE" });
-    localStorage.setItem('cart', JSON.stringify(cartState.cart));
+    // if (cartState.cart.length !== 0) {
+    //   localStorage.setItem('cart', JSON.stringify(cartState.cart));
+    // } 
+    if (cartState.totelItems !== 0) {
+      localStorage.setItem('cart', JSON.stringify(cartState.cart));
+    } 
   }, [cartState.cart]);
 
   return (

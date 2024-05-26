@@ -11,7 +11,7 @@ const initialState = {
     usertype: "",
     cart: "",
     orders: "",
-    
+    address: "",
   },
 };
 
@@ -19,6 +19,7 @@ const UserProvider = ({ children }) => {
   const baseUrl = import.meta.env.VITE_REACT_APP_API_BASE_URL;
 
   const [userState, dispatch] = useReducer(reducer, initialState);
+  const [address, setAddress] = useState([]);
 
   //! 1: Sign Up User
   const signUpUser = async (signUpCredentials) => {
@@ -27,19 +28,27 @@ const UserProvider = ({ children }) => {
       const data = response.data;
       const {
         user: { _id, username, email, orders, cart, usertype, address },
-        token
+        token,
       } = data;
 
       dispatch({
         type: "SAVE_USER_INFO",
-        payload: { _id, username, email, orders, cart, usertype, address, token },
+        payload: {
+          _id,
+          username,
+          email,
+          orders,
+          cart,
+          usertype,
+          address,
+          token,
+        },
       });
 
-      return {success: "true", userType: usertype};
+      return { success: "true", userType: usertype };
     } catch (error) {
       console.log("Error while signing up " + error);
-      return { success: false, message: error.response.data.message};
-
+      return { success: false, message: error.response.data.message };
     }
   };
 
@@ -51,7 +60,7 @@ const UserProvider = ({ children }) => {
         loginCredentials
       );
       const data = response.data;
-      console.log(data.user)
+      console.log(data.user);
       const {
         user: { _id, username, email, orders, cart, usertype, address },
         token,
@@ -59,12 +68,21 @@ const UserProvider = ({ children }) => {
 
       dispatch({
         type: "SAVE_USER_INFO",
-        payload: { _id, username, email, orders, cart, usertype, token, address },
+        payload: {
+          _id,
+          username,
+          email,
+          orders,
+          cart,
+          usertype,
+          token,
+          address,
+        },
       });
-    
-      return {success: "true", userType: usertype};
+
+      return { success: "true", userType: usertype };
     } catch (error) {
-      return { success: false, message: error.response.data.message};
+      return { success: false, message: error.response.data.message };
     }
   };
 
@@ -99,7 +117,9 @@ const UserProvider = ({ children }) => {
     const data = response.data;
 
     if (!data.otpSent) {
-      const {user: { username }} = data;
+      const {
+        user: { username },
+      } = data;
       dispatch({
         type: "UPDATE_USER_INFO",
         payload: { username },
@@ -110,6 +130,7 @@ const UserProvider = ({ children }) => {
     }
   };
 
+  //! 5: OTP verification
   const verifyOTP = async (newData) => {
     try {
       const config = {
@@ -130,6 +151,50 @@ const UserProvider = ({ children }) => {
     }
   };
 
+  //! 6: Get user Address
+  const getAddress = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          token,
+        },
+      };
+      const response = await axios.get(`${baseUrl}auth/address`, config);
+      setAddress(response.data.address);
+      // Handle the response here
+      console.log(response.data.address);
+    } catch (error) {
+      // Handle the error here
+      console.error(error);
+    }
+  };
+
+  //! 7: Add Order
+  const addOrder = async () => {
+    
+    try {
+      const order = JSON.parse(localStorage.getItem("cart"));
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          token,
+        },
+      };
+
+      const response = await axios.post(`${baseUrl}auth/add_order`,order, config);
+      const data = response.data;
+
+      if(data.success) {
+        Array
+        localStorage.setItem("cart", JSON.stringify(new Array()));
+      }
+      return { message: data.message, result: true };
+    } catch (error) {
+      return { message: "Error while Updating Orders", result: false };
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -139,6 +204,9 @@ const UserProvider = ({ children }) => {
         logOut,
         UpdateField,
         verifyOTP,
+        getAddress,
+        address,
+        addOrder,
         userState,
       }}
     >

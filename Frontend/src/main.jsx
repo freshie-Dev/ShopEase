@@ -20,7 +20,7 @@ import Dashboard from "./components/seller/dashboard/Dashboard.jsx";
 import UserProvider from "./context/user-context/UserContextProvider.jsx";
 import GlobalStyle from "./GlobalStyles.js";
 import StyleProvider from "./context/style-context/StyleContextProvider.jsx";
-import Orders from "./components/buyer/Account/orders/Orders.jsx";
+import Orders from "./components/buyer/orders/Orders.jsx";
 import Modal from "./components/modal/Modal.jsx";
 import { SnackbarProvider } from "notistack";
 import { CartProvider } from "./context/cart-context/CartContextProvider.jsx";
@@ -29,6 +29,7 @@ import ProductProvider from "./context/product-context/ProductContextProvider.js
 import ProductForm from "./components/seller/add-product/ProductForm.jsx";
 import ProductFormProvider from "./context/product-form/ProductFormProvider.jsx";
 import IVProvider from "./context/image-verification/ImageVerificationContextProvider.jsx";
+import Payment from "./components/buyer/payment-status/Payment.jsx";
 
 
 const router = createBrowserRouter([
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
       {
         path: "/buyer/singleproduct/customize/:product-id",
         element: <CustomShirtEditor />,
+      },
+      {
+        path: "/buyer/payment/:payment_status",
+        element: <Payment />,
       },
     ],
   },

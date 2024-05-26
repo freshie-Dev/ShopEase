@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegAddressCard } from "react-icons/fa6";
 import { MdAlternateEmail, MdDriveFileRenameOutline } from "react-icons/md";
 import { LiaCitySolid } from "react-icons/lia";
@@ -17,13 +17,10 @@ import { ImCross } from "react-icons/im";
 
 const Checkout = () => {
   const { checkout, saveAddress } = useCartContext();
-  const { userState } = useUserContext();
+  const { userState, getAddress, address } = useUserContext();
   console.log(userState);
   console.log(JSON.parse(localStorage.getItem("userinfo")).address);
 
-  const loggedInUserAddress = JSON.parse(
-    localStorage.getItem("userinfo")
-  ).address;
 
   const [isAddressSame, setIsAddressSame] = useState(true);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -39,11 +36,16 @@ const Checkout = () => {
     sameAddress: Yup.boolean(),
   });
 
-  if (loggedInUserAddress !== "") {
+  useEffect(() => {
+    getAddress()
+    console.log(address)
+  }, [])
+  
+  if (address.length > 0) {
     return (
       <div className=" flex flex-col justify-center items-center mt-[100px] py-[20px]  bg-[#FFE9D4]">
         <h1 className="text-2xl font-bold text-[#916E4B]">Select your Address</h1>
-        {loggedInUserAddress.map((address, index) => {
+        {address.map((address, index) => {
           return (
             <div
               key={index}
@@ -235,7 +237,7 @@ const LocalStyles = styled.div`
   }
 `;
 
-{
+
   /* <div className="flex flex-col gap-2 sm:w-[50%] w-[100%] p-6">
 <h1>Payment</h1>
 
@@ -282,7 +284,7 @@ className="shippibg"
   </div>
   <CustomButton type="submit" className=" btn  ">Checkout</CustomButton>
 </div> */
-}
+
 // cardName: Yup.string().required("Card name is required"),
 // cardNumber: Yup.string()
 //   .required("Credit card number is required")

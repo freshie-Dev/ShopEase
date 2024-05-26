@@ -43,7 +43,8 @@ router.route('/')
                 email: Email,
                 password: hashedPassword,
                 usertype,
-                otp: { code: otp, expiresAt: new Date(expirationTime * 1000) }
+                otp: { code: otp, expiresAt: new Date(expirationTime * 1000) },
+                address
             });
             await user.save();
 
@@ -176,7 +177,7 @@ router.route('/verifyotp')
 router.route('/save_address')
     .post(verifyToken, async (req, res) => {
         try {
-            const userAddressInfo  = req.body;
+            const userAddressInfo = req.body;
             // console.log(req.body)
 
             const user = await User.findById(req.userId);
@@ -186,13 +187,13 @@ router.route('/save_address')
 
             // Add the new address to the user's address array
 
-      user.address.push({
-        area: userAddressInfo.area,
-        city: userAddressInfo.city,
-        zip_code: userAddressInfo.zip_code,
-        email: userAddressInfo.email,
-        customerName: userAddressInfo.customerName,
-      });
+            user.address.push({
+                area: userAddressInfo.area,
+                city: userAddressInfo.city,
+                zip_code: userAddressInfo.zip_code,
+                email: userAddressInfo.email,
+                customerName: userAddressInfo.customerName,
+            });
 
             await user.save();
 
@@ -203,44 +204,71 @@ router.route('/save_address')
         }
     });
 
+//! Route to get user address
+router.route('/address').get(verifyToken, async (req, res) => {
+
+    try {
+
+        const user = await User.findById(req.userId);
+
+        if (!user) {
+
+            return res.status(404).json({ message: 'User not found' });
+
+        }
+
+
+        res.json({ success: true, message: 'Address fetched successfully', address: user.address });
+
+    } catch (error) {
+
+        console.log(error, 'Server error occurred while fetching address');
+
+        res.status(500).json({ error: 'Server error occurred', success: false, message: 'Server under maintenance' });
+
+    }
+
+});
+
 //! Route to save order
 router.route('/add_order')
-    .post(async (req, res) => {
-      try {
-        const { productsData } = req.query;
-        const productsDataParsed = JSON.parse(productsData);
-        const { sessionId } = req.body;
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
-  
-        if (session.payment_status === 'paid') {
-  
-          // add product to order table
-  
-          const newOrder = {
-            items: productsDataParsed.map((item, index) => ({
-              productId: item._id,
-              quantity: item.quantity,
-              color: item.color,
-              imageUrl: item.imageUrl,
-              name: item.name,
-              price: item.price,
-              brand: item.brand,
-            })),
-            paymentIntentId: session.payment_intent,
-            status: 'paid',
-            orderDate: new Date(),
-          };
-          const user = await User.findById(req.userId);
-          user.orders.push(newOrder);
-          await user.save();
-  
-          res.json({ success: true, message: 'Payment Successful' });
-        } else {
-          res.json({ success: false, message: 'Payment Unsuccessful' });
+    .post(verifyToken, async (req, res) => {
+        try {
+            const  order  = req.body;
+            const userId = req.userId;  // Get user ID from verified token
+
+            // Create an array to hold the order items
+            const orderItems = [];
+
+            // Populate the order items with details from the Product model
+            for (const item of order) {
+                const product = await Product.findById(item._id);
+                if (product) {
+                    orderItems.push({
+                        productId: product._id,
+                        quantity: item.quantity,
+                        color: item.color,
+                        imageUrl: product.imageUrl,
+                        name: product.title,
+                        price: product.price,
+                        brand: product.brand,
+                    });
+                }
+            }
+
+            // Find the user and add the order
+            const user = await User.findById(userId);
+            if (user) {
+                user.orders.push({ items: orderItems });
+                await user.save();
+                res.status(200).json({ success: true, message: 'Order placed successfully', orders: user.orders });
+            } else {    
+                res.status(404).json({ success: false, message: 'User not found' });
+            }
+        } catch (error) {
+            console.error('Error while placing order:', error);
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
         }
-      } catch (error) {
-        console.error('Error while Payment Procedure:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
-      }
     });
+
 module.exports = router;

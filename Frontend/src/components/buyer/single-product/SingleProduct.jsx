@@ -9,6 +9,7 @@ import useCartContext from "../../../context/cart-context/CartContextProvider";
 import CustomButton from "../../../custom-components/HoverButton";
 
 import custom_shirt_image from "../../../assets/custom.jpg";
+import { enqueueSnackbar } from "notistack";
 
 const SingleProduct = () => {
   const navigate = useNavigate();
@@ -22,7 +23,6 @@ const SingleProduct = () => {
 
   const { singleProduct } = productState;
 
-  
   // Destructure properties from singleProduct
   const {
     title,
@@ -33,13 +33,12 @@ const SingleProduct = () => {
     categories,
     customizable,
   } = singleProduct;
-  
+
   const [customSize, setCustomSize] = useState("");
   const handleSizeChange = (event) => {
     setCustomSize(event.target.value);
   };
 
-  
   const Sizes = (colorName) => {
     if (attributes) {
       const sizes = attributes
@@ -64,7 +63,7 @@ const SingleProduct = () => {
 
   useEffect(() => {
     getSingleProduct(productId);
-    console.log(customizedImage)
+    console.log(customizedImage);
   }, []);
 
   return (
@@ -226,7 +225,8 @@ const SingleProduct = () => {
               -
             </button>
           </div>
-          <button
+
+          <CustomButton
             onClick={() => {
               addToCart(
                 productId,
@@ -239,10 +239,12 @@ const SingleProduct = () => {
               );
               navigate("/buyer/cart");
             }}
-            className="my-4 font-semibold md:w-[45%] w-full h-[50px]  bg-transparent border-[2px] border-black hover:bg-[#000] hover:text-[#d9a470] rounded-md  duration-300 "
+            className="min-w-[200px] max-w-[300px] text-xl "
+            disabled={selectedColor === "" || selectedSize === ""}
+            // disabled = {true}
           >
             Add To Cart
-          </button>
+          </CustomButton>
         </div>
       </section>
     </LocalStyles>
