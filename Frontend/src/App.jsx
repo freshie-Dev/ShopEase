@@ -29,7 +29,7 @@ function App() {
         } else {
           if (localStorage.length > 0) {
             if (userType === "seller") {
-              navigate("/seller/dashboard");
+               navigate("/seller/dashboard/home");
             } else {
               navigate("/buyer/home");
             }

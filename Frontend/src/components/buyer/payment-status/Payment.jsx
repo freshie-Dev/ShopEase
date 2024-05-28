@@ -10,7 +10,7 @@ const PaymentSuccess = () => {
 
   const navigate = useNavigate();
   const query = useParams()
-  const paymentStatus = query.payment_status;
+  const paymentStatus = query.payment-status;
   console.log(paymentStatus)
 
   const handleOrder = async ()=> {

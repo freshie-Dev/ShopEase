@@ -90,7 +90,7 @@ const Modal = () => {
                 x
               </p>
             </div>
-            <h1 className="cursive text-[1.4rem] w-full text-center bg-black text-[#D9A470] my-1 rounded-md p-2">
+            <h1 className="  text-[1.4rem] w-full text-center bg-black text-[#D9A470] my-1 rounded-md p-2">
               {changeField === "Password"
                 ? "Set Password"
                 : changeField === "Username"
@@ -114,7 +114,7 @@ const Modal = () => {
                     // name={changeField}
                     name="Username"
                     placeholder={`Enter ${changeField}`}
-                    className="w-full text-center cursive h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
+                    className="w-full text-center   h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
                   ></Field>
                 ) : changeField === "Password" ? (
                   <Field
@@ -123,7 +123,7 @@ const Modal = () => {
                     // name={changeField}
                     name="Password"
                     placeholder={`Enter ${changeField}`}
-                    className="w-full text-center cursive h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
+                    className="w-full text-center   h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
                   ></Field>
                 ) : changeField === "OTP" ? (
                   <Field
@@ -133,7 +133,7 @@ const Modal = () => {
                     name="OTP"
                     component={CustomInputComponent}
                     placeholder={`Enter ${changeField}`}
-                    className="w-full text-center cursive h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
+                    className="w-full text-center   h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
                   ></Field>
                 ) : null}
 
@@ -142,7 +142,7 @@ const Modal = () => {
                 </div>
                 <button
                   type="submit"
-                  className="text-[#000]  text-[1.4rem] cursive font-bold  rounded-md bg-[#eee1c8] w-full py-4 mt-1"
+                  className="text-[#000]  text-[1.4rem]   font-bold  rounded-md bg-[#eee1c8] w-full py-4 mt-1"
                 >
                   Submit
                 </button>

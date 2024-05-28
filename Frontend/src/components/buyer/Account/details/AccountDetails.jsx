@@ -12,7 +12,7 @@ const AccountDetails = () => {
 
   return (
     <div className=" main flex-col  ">
-      <h1 className="py-2 my-3 text-3xl text-[#D9A470] cursive">
+      <h1 className="py-2 my-3 text-3xl text-[#D9A470]  ">
         Account Details
       </h1>
       <div className="bg-[#D9A470] w-full sm:w-[80%] p-3 md:w-[70%] lg:w-[50%] min-h-max flex flex-col justify-center items-center rounded-md ">
@@ -29,7 +29,7 @@ const AccountDetails = () => {
           <p className="pl-1">{userInfo.usertype}</p>
         </div>
       </div>
-      <h1 className="py-2 my-3 text-3xl text-[#D9A470] cursive">
+      <h1 className="py-2 my-3 text-3xl text-[#D9A470]  ">
         Change Information
       </h1>
       <div className="bg-[#D9A470]  w-full sm:w-[80%] md:w-[70%] lg:w-[50%] min-h-max flex justify-between items-center rounded-md">

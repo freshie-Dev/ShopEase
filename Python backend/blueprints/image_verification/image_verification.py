@@ -36,51 +36,25 @@ def detect_features(imgs):
         img['kp'], img['des'] = sift.detectAndCompute(img['f'], None)
     return imgs
 
-# def similarity_check(imgs, userId):
-#     """
-#     Checks similarity.
-#     """
-#     duplicates = []
-#     for i1 in range(len(imgs)):
-#         print(f"OUTER image {imgs[i1]['p']} ")
-        
-#         # if os.path.basename(imgs[i1]['p']) starts with userId then run the nested loop
-#         for i2 in range(i1 + 1, len(imgs)):
-#         # for i2 in range(i1, len(imgs)):
-#             print(f".....INNER image ")
-#             FLANN_INDEX_KDTREE = 1
-#             index_params = dict(
-#                 algorithm=FLANN_INDEX_KDTREE,
-#                 trees=5
-#             )
-#             search_params = dict(checks=50)
-#             flann = cv.FlannBasedMatcher(index_params, search_params)
-#             matches = flann.knnMatch(imgs[i1]['des'], imgs[i2]['des'], k=2)
-#             matchesCount = 0
-#             for i, (m, n) in enumerate(matches):
-#                 if m.distance < DEFAULT_FEATURES_DISTANCE * n.distance:
-#                     matchesCount += 1
-#             if matchesCount > DEFAULT_MIN_MATCHES:
-#                 # h1, w1 = imgs[i1]['f'].shape[:2]
-#                 # h2, w2 = imgs[i2]['f'].shape[:2]
-#                 # duplicates.append(imgs[i2 if h1 * w1 > h2 * w2 else i1]['p'])
-#                 duplicates.append(imgs[i1]['p'])
-#                 duplicates.append(imgs[i2]['p'])
-    
-#     return duplicates
-    
 def similarity_check(imgs, userId):
     """
     Checks similarity.
     """
     duplicates = []
     for i1 in range(len(imgs)):
-        if os.path.basename(imgs[i1]['p']).startswith(userId):
-            print(f"OUTER image {imgs[i1]['p']} ")
-
-                # Run the nested loop only if the image path starts with userId
+        
+        # if os.path.basename(imgs[i1]['p']) starts with userId then run the nested loop
+        # if os.path.basename(imgs[i1]['p']).startswith(userId):
+        #     print (f'true: {os.path.basename(imgs[i1]['p'])}')
+        # else: 
+        #     print (f'false: {os.path.basename(imgs[i1]['p'])}')
+        print("-----------------------------------------------------------")
+        print(os.path.basename(imgs[i1]['p']).startswith(userId))
+        print(os.path.basename(imgs[i1]['p']))
+        print("-----------------------------------------------------------")
+        if os.path.basename(imgs[i1]['p']).startswith(userId) == True:
             for i2 in range(i1 + 1, len(imgs)):
-                print(f".....INNER image ")
+            # for i2 in range(i1, len(imgs)):
                 FLANN_INDEX_KDTREE = 1
                 index_params = dict(
                     algorithm=FLANN_INDEX_KDTREE,
@@ -94,10 +68,43 @@ def similarity_check(imgs, userId):
                     if m.distance < DEFAULT_FEATURES_DISTANCE * n.distance:
                         matchesCount += 1
                 if matchesCount > DEFAULT_MIN_MATCHES:
+                    # h1, w1 = imgs[i1]['f'].shape[:2]
+                    # h2, w2 = imgs[i2]['f'].shape[:2]
+                    # duplicates.append(imgs[i2 if h1 * w1 > h2 * w2 else i1]['p'])
                     duplicates.append(imgs[i1]['p'])
                     duplicates.append(imgs[i2]['p'])
-
+    
     return duplicates
+    
+# def similarity_check(imgs, userId):
+#     """
+#     Checks similarity.
+#     """
+#     duplicates = []
+#     for i1 in range(len(imgs)):
+#         if os.path.basename(imgs[i1]['p']).startswith(userId):
+#             # print(f"OUTER image {imgs[i1]['p']} ")
+
+#                 # Run the nested loop only if the image path starts with userId
+#             for i2 in range(i1 + 1, len(imgs)):
+#                 # print(f".....INNER image ")
+#                 FLANN_INDEX_KDTREE = 1
+#                 index_params = dict(
+#                     algorithm=FLANN_INDEX_KDTREE,
+#                     trees=5
+#                 )
+#                 search_params = dict(checks=50)
+#                 flann = cv.FlannBasedMatcher(index_params, search_params)
+#                 matches = flann.knnMatch(imgs[i1]['des'], imgs[i2]['des'], k=2)
+#                 matchesCount = 0
+#                 for i, (m, n) in enumerate(matches):
+#                     if m.distance < DEFAULT_FEATURES_DISTANCE * n.distance:
+#                         matchesCount += 1
+#                 if matchesCount > DEFAULT_MIN_MATCHES:
+#                     duplicates.append(imgs[i1]['p'])
+#                     duplicates.append(imgs[i2]['p'])
+
+#     return duplicates
 
 # image detection route
 @image_verification_bp.route('/verify_images')
@@ -111,7 +118,7 @@ def index():
         features = detect_features(imgs)
         
         duplicates = similarity_check(features, userId=user_id)
-        
+        print(f'{duplicates}')
         
         for idx, path in enumerate(list(set(duplicates)), 1):
             print(f"{idx}. {path}")
@@ -119,6 +126,8 @@ def index():
         duplicates = list(set(duplicates))
         
         duplicates_data = [{'index': idx, 'path': os.path.basename(path)} for idx, path in enumerate(duplicates, 1)]
+        
+        print(f'duplicates data: {duplicates_data}')
 #
         return jsonify({'duplicates': duplicates_data})
         

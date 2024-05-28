@@ -56,7 +56,7 @@ const Register = () => {
 
   return (
     <div className="w-[380px] flex-col justify-center items-center bg-[#131314] border-[1px] border-[#574d43] rounded-md p-3 ">
-      <h1 className=" text-5xl text-[#D9A470]  my-10 cursive">
+      <h1 className=" text-5xl text-[#D9A470]  my-10  ">
         {formType ? "Register" : "Sign In"}
       </h1>
       <Formik
@@ -78,7 +78,7 @@ const Register = () => {
 
               <FormInput type="text" name="Email" />
               <div
-                className=" cursive w-full flex mt-1 text-[#f5e6cb] text-[1.2rem] font-light gap-2"
+                className="   w-full flex mt-1 text-[#f5e6cb] text-[1.2rem] font-light gap-2"
                 role="group"
                 aria-labelledby="my-radio-group"
               >
@@ -119,7 +119,7 @@ const Register = () => {
             </>
           )}
           <button
-            className="text-[#000]  text-[1.4rem] cursive font-bold  rounded-md bg-[#eee1c8] w-full py-4 mt-5"
+            className="text-[#000]  text-[1.4rem]   font-bold  rounded-md bg-[#eee1c8] w-full py-4 mt-5"
             type="submit"
           >
             {formType ? "Sign Up" : "Sign In"}

@@ -3,6 +3,7 @@ from flask_cors import CORS
 from blueprints.bg_removal.remove_bg import bg_removal_bp
 from blueprints.image_verification.image_verification import image_verification_bp
 
+
 app = Flask(__name__)
 CORS(app)
 

@@ -1,20 +1,22 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import DynamicInputComponent from "./DynamicInputComponent";
 import TagInput from "./TagInput";
 import styled from "styled-components";
-import FormInput from "../../register/FormInput";
-import { Form, Formik } from "formik";
-import { useProductFormContext } from "../../../context/product-form/ProductFormProvider";
 import ProcessedImage from "./ProcessedImage";
 import { enqueueSnackbar } from "notistack";
-import CustomCheckbox from "../../../custom-components/checkbox/CheckBox";
+import CustomCheckbox from "../../../../custom-components/checkbox/CheckBox";
+
 
 import { TiTick } from "react-icons/ti";
 import { ImCross } from "react-icons/im";
-import { GridLoader } from "react-spinners";
+import { BarLoader } from "react-spinners";
+import { useProductFormContext } from "../../../../context/product-form/ProductFormProvider";
+import Br from "../../../../custom-components/line-break/Br";
+
+
 
 function ProductForm() {
-  const { productFormData, handleFormSubmit, isRemoveBgChecked, setIsRemoveBgChecked, customizable, setCustomizable, isLoading } = useProductFormContext();
+  const {  handleFormSubmit, isRemoveBgChecked, setIsRemoveBgChecked, customizable, setCustomizable, isLoading } = useProductFormContext();
 
   const [fileName, setFileName] = useState("Upload File");
 
@@ -40,17 +42,15 @@ function ProductForm() {
 
   return (
     // <LocalStyles>
-      <main className={`main-container text-[#E2D4BA]  flex justify-center items-center relative`}>
-        {/* <h1 className="text-[#d9a470] cursive text-5xl my-8">Add a product</h1> */}
-        {isLoading && <div className= {`absolute w-full h-full flex justify-center items-center  rounded-xl ${isLoading && "bg-black opacity-25"}`} ><GridLoader color="white" size={15} speedMultiplier={1} /></div>  }
-       
+      <LocalStyles className={` flex-grow  p-2 md:p-6 bg-color3 text-white `}>
+        {/* <h1 className="text-[#d9a470]   text-5xl my-8">Add a product</h1> */}
         <form
           id="product-form"
           onSubmit={(e) => handleSubmit(e)}
-          className="flex flex-col w-[700px] rounded-md bg-[#BB9773] px-16 py-8 box-content"
+          className="flex flex-col max-w-[700px] rounded-2xl border-2 border-color1 p-6 box-content mx-auto my-0"
         >
-          <div className=" w-full flex items-center justify-center border-black border-2 p-2 rounded-md mb-2">
-            <button className="min-w-max mr-2 font-bold text-xl">
+          <div className=" w-full flex items-center justify-center border-black border-[1px] p-2 rounded-md mb-2">
+            <button className="min-w-max mr-2  text-xl">
               Customizable product
             </button>
             <CustomCheckbox
@@ -61,14 +61,14 @@ function ProductForm() {
           <div className="flex justify-between">
             <input
               type="text"
-              className="w-[49%] PFinput cursive placeholder:text-[#a0a0a0] focus:outline-none"
+              className="w-[49%] PFinput   placeholder:text-[#a0a0a0] focus:outline-none"
               placeholder="Title"
               name="title"
               required
             />
             <input
               type="text"
-              className="w-[49%] PFinput cursive"
+              className="w-[49%] PFinput  "
               placeholder="Price"
               name="price"
               required
@@ -77,7 +77,7 @@ function ProductForm() {
           <textarea
             type="text"
             placeholder="Description"
-            className="PFinput cursive border border-[#d9a470]"
+            className="PFinput   border border-[#d9a470]"
             name="description"
             required
           />
@@ -132,12 +132,13 @@ function ProductForm() {
             </>
           )}
 
-          <button className="hoverButton text-xl font-extrabold" type="submit">
-            Submit
+          <button className="hoverButton text-xl  " type="submit">
+            {isLoading ? <BarLoader  color="white"  speedMultiplier={1} /> : "Submit"}
           </button>
+          <Br className="h-[5px] bg-color1 my-12"/>
           {!customizable && <ProcessedImage />}
         </form>
-      </main>
+      </LocalStyles>
     // </LocalStyles>
   );
 }
@@ -145,24 +146,26 @@ function ProductForm() {
 export default ProductForm;
 
 const LocalStyles = styled.div`
-  /* .main {
-    margin-top: 100px;
-    display: flex;
-    flex-direction: column;
-  } */
-  /* input,
+ 
+ input,
   textarea {
     color: #d9a470;
     border-radius: 10px;
     margin: 2px;
   }
+ 
   .input,
   input,
   textarea {
     padding: 0.75rem;
     background-color: #000000c0;
     font-weight: 300;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #f5e6cb;
-  } */
+  } 
+  .hoverButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;

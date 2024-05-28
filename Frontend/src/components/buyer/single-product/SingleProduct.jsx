@@ -157,7 +157,7 @@ const SingleProduct = () => {
             </>
           ) : (
             <div className="flex items-center my-2">
-              <p className="ml-2 cursive text-2xl font-bold inline">
+              <p className="ml-2   text-2xl font-bold inline">
                 Select a size
               </p>
               <div>

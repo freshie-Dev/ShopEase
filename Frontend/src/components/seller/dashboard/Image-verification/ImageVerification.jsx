@@ -11,12 +11,10 @@ import { GridLoader } from "react-spinners";
 const ImageVerification = () => {
   const { verifyImages, duplicateProducts, loading } = useIVContext();
   return (
-    <main className="main-container">
-      <div className="main-title">
-        <h1 className="mx-auto">Seller Image Verification</h1>
-      </div>
-      <div className="main-content">
-        <p>
+    <div className="flex-grow p-2 md:p-6 bg-color3 text-white">
+        <h3 className="font-semibold border-b-[.2rem] border-color1 my-4 pb-0">Seller Image Verification</h3>
+      
+        <p className="w-[80%] md:w-[60%]">
           We want our clients to feel totally safe about their profits by
           entrusting us with their products information. Therefore you can now
           crosscheck whether your product's exclusive image is being used by
@@ -35,17 +33,16 @@ const ImageVerification = () => {
           <BsInfoCircleFill size={20} color="#515151" /> &nbsp;It might take
           some while to get the results.
         </p>
-      </div>
 
       <div className="main-title mt-10">
-        <h1 className="mx-auto">Results will be Shown below</h1>
+      <h3 className="font-semibold border-b-[.2rem] border-color1 my-4 pb-0">Results will be shown below</h3>
       </div>
       <div className="main-content">
-        {duplicateProducts.length > 0 && (
+        {duplicateProducts.length > 0 ? (
           <h1 className="text-lg">
             These products have same images as your product.
           </h1>
-        )}
+        ) : <p>No Duplicates yet</p>}
         {loading ? (
           <div className="h-[67vh] flex justify-center items-center">
             <GridLoader color="black" size={15} speedMultiplier={1} />
@@ -54,7 +51,7 @@ const ImageVerification = () => {
           <DuplicateProductCard duplicateProducts={duplicateProducts} />
         )}
       </div>
-    </main>
+    </div>
   );
 };
 

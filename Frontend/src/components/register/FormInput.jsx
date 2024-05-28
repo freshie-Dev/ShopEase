@@ -6,7 +6,7 @@ const FormInput = ({ type, name, as }) => {
   return (
     <div className="flex flex-col w-full px-2 glass-input my-2">
       <Field
-        className="cursive p-3  w-[100%] bg-transparent placeholder:text-[#a0a0a0] font-[300] text-[1.2rem] text-[#f5e6cb] focus:outline-none"
+        className="  p-3  w-[100%] bg-transparent placeholder:text-[#a0a0a0] font-[300] text-[1.2rem] text-[#f5e6cb] focus:outline-none"
         id={name}
         as={as}
         type={type}

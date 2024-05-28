@@ -13,11 +13,12 @@ import React from 'react';
 //   );
 // };
 
-const CustomButton = ({ children, onClick, className, type, disabled: propDisabled }) => {
+const CustomButton = ({ children, onClick, className, type, disabled: propDisabled, style }) => {
   const disabled = propDisabled !== undefined ? propDisabled : false;
 
   return (
     <button
+      style={style}
       type={type}
       onClick={onClick}
       disabled={disabled}

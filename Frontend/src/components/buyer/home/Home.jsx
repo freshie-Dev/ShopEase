@@ -6,7 +6,7 @@ import Recommendations from "./Recommendations.jsx";
 const Home = () => {
   return (
     <LocalStyles>
-      <div className="main flex-col cursive  ">
+      <div className="main flex-col    ">
         <Heropage />
         <Recommendations />
       </div>

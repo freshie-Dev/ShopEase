@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
         `,
     border: "1px solid #d9a470",
     color: "#d9a470",
-    fontFamily: `'Dancing Script', cursive`,
+    fontFamily: `'Dancing Script',  `,
     transition: "background-color 0.7s ease-in-out", // Add transition here
   };
 
@@ -64,11 +64,11 @@ const ProductCard = ({ product }) => {
             variant="h5"
             component="div"
           >
-            <p className=" cursive font-bold">{product.title}</p>
-            <p className="cursive text-lg">{product.price} Rs.</p>
+            <p className="   font-bold">{product.title}</p>
+            <p className="  text-lg">{product.price} Rs.</p>
           </Typography>
           <Typography variant="body2">
-            <p className=" m-0 p-0 cursive font-bold text-[15px]">
+            <p className=" m-0 p-0   font-bold text-[15px]">
               {product.description.substring(0, 100) + "..."}
             </p>
           </Typography>

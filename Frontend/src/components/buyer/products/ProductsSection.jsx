@@ -12,7 +12,7 @@ const ProductsSection = () => {
   return (
     <div className="flex flex-col justify-center items-center flex-wrap flex-grow  gap-y-2 border-l-2 border-[#d9a470] w-[70%] min-h-[87vh]">
       <ImageSearch/>
-      <h1 className="cursive text-[#d9a470] text-4xl font-bold my-3">
+      <h1 className="  text-[#d9a470] text-4xl font-bold my-3">
         All Products
       </h1>
       {isLoading ? (

@@ -5,7 +5,6 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import App from "./App.jsx";
-import Home from "./components/buyer/home/Home.jsx";
 import Products from "./components/buyer/products/Products.jsx";
 import Cart from "./components/buyer/cart/Cart.jsx";
 import SingleProduct from "./components/buyer/single-product/SingleProduct.jsx";
@@ -16,7 +15,6 @@ import Checkout from "./components/buyer/Checkout/Checkout.jsx";
 
 import LayoutBuyer from "./components/LayoutBuyer.jsx";
 import LayoutSeller from "./components/LayoutSeller.jsx";
-import Dashboard from "./components/seller/dashboard/Dashboard.jsx";
 import UserProvider from "./context/user-context/UserContextProvider.jsx";
 import GlobalStyle from "./GlobalStyles.js";
 import StyleProvider from "./context/style-context/StyleContextProvider.jsx";
@@ -25,12 +23,15 @@ import Modal from "./components/modal/Modal.jsx";
 import { SnackbarProvider } from "notistack";
 import { CartProvider } from "./context/cart-context/CartContextProvider.jsx";
 import { FilterProvider } from "./context/filter-context/FilterContext.jsx";
+import ProductForm from "./components/seller/dashboard/add-product/ProductForm.jsx"
 import ProductProvider from "./context/product-context/ProductContextProvider.jsx";
-import ProductForm from "./components/seller/add-product/ProductForm.jsx";
 import ProductFormProvider from "./context/product-form/ProductFormProvider.jsx";
 import IVProvider from "./context/image-verification/ImageVerificationContextProvider.jsx";
 import Payment from "./components/buyer/payment-status/Payment.jsx";
+import Home from "./components/seller/dashboard/home/Home.jsx"
+import ImageVerification from "./components/seller/dashboard/Image-verification/ImageVerification.jsx";
 
+import SellerNavigationProvider from "./context/seller-navigation/SellerNavigationContext.jsx";
 
 const router = createBrowserRouter([
   {
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
         element: <CustomShirtEditor />,
       },
       {
-        path: "/buyer/payment/:payment_status",
+        path: "/buyer/payment/:payment-status",
         element: <Payment />,
       },
     ],
@@ -92,8 +93,8 @@ const router = createBrowserRouter([
     element: <LayoutSeller />,
     children: [
       {
-        path: "/seller/dashboard",
-        element: <Dashboard />,
+        path: "/seller/dashboard/home",
+        element: <Home />,
       },
       {
         path: "/seller/account-details",
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
         path: "/seller/dashboard/add-product",
         element: <ProductForm />,
       },
+      {
+        path: "/seller/dashboard/image-verification",
+        element: <ImageVerification/>
+      }
     ],
   },
 ]);
@@ -115,13 +120,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <CartProvider>
             <FilterProvider>
               <IVProvider>
-                <StyleProvider>
-                  <GlobalStyle />
-                  <SnackbarProvider>
-                    <RouterProvider router={router} />
-                    <Modal openModal={false} />
-                  </SnackbarProvider>
-                </StyleProvider>
+                <SellerNavigationProvider>
+                  <StyleProvider>
+                    <GlobalStyle />
+                    <SnackbarProvider>
+                      <RouterProvider router={router} />
+                      <Modal openModal={false} />
+                    </SnackbarProvider>
+                  </StyleProvider>
+                </SellerNavigationProvider>
               </IVProvider>
             </FilterProvider>
           </CartProvider>

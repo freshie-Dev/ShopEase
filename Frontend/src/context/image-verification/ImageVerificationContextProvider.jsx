@@ -21,24 +21,19 @@ const IVProvider = ({ children }) => {
         },
       });
       let duplicateImages = response.data.duplicates;
+      console.log(duplicateImages)
 
       duplicateImages = duplicateImages.map((imageName) => {
         return imageName.path;
       });
-      // let duplicateImages = [
-      //   {65cb4aa0f927e23076ad66e5_538690_2024-05-14_18-38-38.png},
-      //   {66436a8e72a872420993a2cf_474656_2024-05-14_18-53-15.png},
-      //   {66436a8e72a872420993a2cf_338597_2024-05-14_18-53-05.png},
-      //   {66436a8e72a872420993a2cf_144550_2024-05-14_18-48-00.png},
-      //   {66436a8e72a872420993a2cf_207470_2024-05-14_18-53-15.png}
-      // ]
-      // Send duplicateImages to the backend to fetch products
-      // const productsResponse = await axios.post(`${baseUrl}productsByUniqueIdentifiers`,
+      console.log(duplicateImages)
+   
       const productsResponse = await axios.post(
         `http://localhost:3002/products/productsByUniqueIdentifiers`,
         { uniqueIdentifiers: duplicateImages }
       );
       let products = productsResponse.data;
+      console.log(products)
       products = sortProducts(
         products,
         JSON.parse(localStorage.getItem("userinfo"))._id

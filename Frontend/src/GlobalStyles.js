@@ -7,8 +7,11 @@ const GlobalStyle = createGlobalStyle`
 }
 
 *{
-  font-family: "Comfortaa", sans-serif;
-  font-style: italic;
+  font-family: "Montserrat", sans-serif;
+}
+h3{
+  font-size: clamp(.8rem, 4vw, 1.5rem);
+  font-weight: 600;
 }
 
 
@@ -16,13 +19,13 @@ const GlobalStyle = createGlobalStyle`
 
   .hoverButton{
     height: 50px;
-    padding: 0 0.75rem;
+    padding: 3px 0.75rem;
     background-color: black;
     color: #d9a470;
-    font-family: 'Dancing Script', cursive;
     border: #d9a470 solid 1px; 
     border-radius: 100px;
     transition-duration: 300ms;
+    
   }
   .hoverButton:hover{
     background-color: #d9a470;
@@ -34,9 +37,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: clamp(11px, 2vw, 17px);
   }
 
-  .cursive {
-    font-family: 'Dancing Script', cursive;
-  }
+
 
   .h1 {
     font-family: "Barlow", sans-serif;
@@ -63,9 +64,7 @@ const GlobalStyle = createGlobalStyle`
   .opensans {
     font-family: "Open Sans", sans-serif;
   }
-  /* input{
-    font-family: "Dancing Script", cursive;
-  } */
+ 
   input:focus, textarea:focus {
     outline: none;
   }

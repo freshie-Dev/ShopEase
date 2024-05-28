@@ -17,7 +17,7 @@ const Products = () => {
 
   return (
     <LocalStyles>
-      <div className="main cursive text-[#d9a470]">
+      <div className="main   text-[#d9a470]">
 
         <div className="h-[87vh] p-2 items md:w-[300px] md:block hidden">
           <FilterSection/>

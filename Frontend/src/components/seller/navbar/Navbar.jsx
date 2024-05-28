@@ -11,7 +11,7 @@ const Navbar = () => {
   const userInfo = JSON.parse(localStorage.getItem("userinfo")) || userState.loggedInUserInfo;
 
   return (
-    <div className='fixed top-0 w-screen h-[100px] bg-black text-[#D9A470] cursive flex justify-between items-center px-2 border-[#D9A470] border-b-2'>
+    <div className='fixed top-0 w-screen h-[100px] bg-black text-[#D9A470]   flex justify-between items-center px-2 border-[#D9A470] border-b-2'>
       <h1 className='text-xl md:text-3xl font-bold'>
         ShopEase
       </h1>
