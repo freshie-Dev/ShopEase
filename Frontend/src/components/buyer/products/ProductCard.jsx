@@ -43,7 +43,7 @@ const ProductCard = ({ product }) => {
   return (
     <LocalStyles>
       <Card
-        className=""
+        className="col-span-1"
         onClick={()=> navigate(`/buyer/singleproduct/${product._id}`)}
         // onClick={()=> navigate(`/buyer/singleproduct/${product.id}`)}
         onMouseEnter={() => setHover(true)}
@@ -68,8 +68,8 @@ const ProductCard = ({ product }) => {
             <p className="  text-lg">{product.price} Rs.</p>
           </Typography>
           <Typography variant="body2">
-            <p className=" m-0 p-0   font-bold text-[15px]">
-              {product.description.substring(0, 100) + "..."}
+            <p className=" m-0 p-0 ">
+              {product.description.substring(0, 70) + "..."}
             </p>
           </Typography>
         </CardContent>

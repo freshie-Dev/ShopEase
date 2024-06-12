@@ -8,20 +8,14 @@ import React, {
 } from "react";
 import reducer from "../../reducers/CartReducer";
 import axios from "axios";
+import { useUserContext } from "../user-context/UserContextProvider";
 
 const CartContext = createContext();
 
-const localStorageCartData = () => {
-  const cartData = localStorage.getItem("cart");
-  if (cartData) {
-    return JSON.parse(cartData);
-  } else {
-    return [];
-  }
-};
+
 
 const initialState = {
-  cart: [],
+  cart: localStorage.getItem('cart')? JSON.parse(localStorage.getItem('cart')) : [],
   totalItems: 0,
   totalPrice: 0,
   shippingFee: 5,
@@ -31,11 +25,14 @@ const initialState = {
 const CartProvider = ({ children }) => {
   const baseUrl = import.meta.env.VITE_REACT_APP_API_BASE_URL;
 
+  const {getAddress, setAddress} = useUserContext();
+
   const [customizedImage, setCustomizedImage] = useState(null);
   const [cartState, dispatch] = useReducer(reducer, initialState);
 
   const addToCart = (
     id,
+    userId,
     color,
     size,
     quantity,
@@ -44,10 +41,13 @@ const CartProvider = ({ children }) => {
     customSize
   ) => {
     console.log("i am running")
+
+    
     dispatch({
       type: "ADD_TO_CART",
       payload: {
         id,
+        userId,
         color,
         size,
         quantity,
@@ -70,6 +70,10 @@ const CartProvider = ({ children }) => {
   const removeCartItem = (id) => {
     dispatch({ type: "REMOVE_CART_ITEM", payload: id });
   };
+
+  const emptyCart = () => {
+    dispatch({ type: "EMPTY_CART" });
+  }
 
   const checkout = async () => {
     try {
@@ -97,54 +101,17 @@ const CartProvider = ({ children }) => {
 
   
 
-  const saveAddress = async (address) => {
-    const token = localStorage.getItem('token');
   
-    const userAddressInfo = {
-      area: address.address,
-      city: address.city,
-      zip_code: address.zip,
-      email: address.email,
-      customerName: address.name,
-    };
-
-    console.log(userAddressInfo)
-  
-    try {
-      // const response = await axios.post(`${baseUrl}auth/save_address`, {
-      //   userId,
-      //   address: userAddressInfo,
-      // });
-      const response = await axios.post(`${baseUrl}auth/save_address`, userAddressInfo, {
-        headers: {
-          'Content-Type': 'application/json',
-          'token': token,
-        },
-      });
-  
-      if (response.data.success) {
-        console.log('Address saved successfully');
-      } else {
-        console.error('Failed to save address:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error saving address:', error);
-    }
-  };
-
   useEffect(() => {
     console.log(cartState);
   }, [cartState]);
 
   useEffect(() => {
+    console.log("i am runninggggggg");
     dispatch({ type: "CART_TOTAL_ITEMS" });
     dispatch({ type: "CART_TOTAL_PRICE" });
-    // if (cartState.cart.length !== 0) {
-    //   localStorage.setItem('cart', JSON.stringify(cartState.cart));
-    // } 
-    if (cartState.totelItems !== 0) {
-      localStorage.setItem('cart', JSON.stringify(cartState.cart));
-    } 
+    localStorage.setItem('cart', JSON.stringify(cartState.cart))
+   
   }, [cartState.cart]);
 
   return (
@@ -158,7 +125,7 @@ const CartProvider = ({ children }) => {
         customizedImage,
         setCustomizedImage,
         checkout,
-        saveAddress,
+        emptyCart,
       }}
     >
       {children}

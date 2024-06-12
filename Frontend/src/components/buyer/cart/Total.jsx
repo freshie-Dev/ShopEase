@@ -2,6 +2,7 @@ import React from "react";
 import useCartContext from "../../../context/cart-context/CartContextProvider";
 import CustomButton from "../../../custom-components/HoverButton";
 import { NavLink, useNavigate } from "react-router-dom";
+import SelectAddress from "../Checkout/SelectAddress";
 
 const Total = () => {
   const navigate = useNavigate();
@@ -39,6 +40,10 @@ const Total = () => {
 
         <div className="h-[4px]  bg-[#d9a470] rounded-[100%] px-[50px]"></div>
         
+
+        
+
+
         {/* <NavLink to="/buyer/checkout" > go too</NavLink> */}
         <NavLink to="/buyer/checkout"><CustomButton className="border-white mt-10" >Checkout</CustomButton></NavLink>
         {/* <CustomButton onClick={checkout} className="border-white mt-10" >Checkout</CustomButton> */}

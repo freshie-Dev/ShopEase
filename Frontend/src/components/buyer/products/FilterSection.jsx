@@ -14,7 +14,7 @@ const FilterSection = () => {
   } = useFilterContext();
 
   return (
-    <>
+    < >
       <input
         type="text"
         name="text"

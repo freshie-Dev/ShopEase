@@ -66,11 +66,21 @@ const reducer = (state, action) => {
                     [name]: value,
                 }
             }
+
+        case "UPDATE_QUERY_IMAGE_FILTERS_VALUE":
+            console.log(action.payload)
+            return {
+                ...state,
+                filters: {
+                    ...state.filters,
+                    [action.payload.name]: action.payload.value,
+                }
+            }
         case "FILTER_PRODUCTS":
             let {allProducts} = state;
             let tempFilteredProducts = [...allProducts];
 
-            const {text, category, colors, brand, price} = state.filters;
+            const {text, category, colors, brand, price, query_image} = state.filters;
             let check = "nothing"
             if (text) {
                 tempFilteredProducts = tempFilteredProducts.filter((curEle) => {
@@ -104,7 +114,17 @@ const reducer = (state, action) => {
                     return curEle.price <= price;
                 });
             }
-            // console.log(check, tempFilteredProducts)
+            if (query_image) {
+                const identifierIndexMap = new Map(query_image.map((id, index) => [id, index]));
+              
+                // Sort tempFilteredProducts based on the order of query_image array
+                const sortedTempProducts = tempFilteredProducts.sort((a, b) => {
+                  const indexA = identifierIndexMap.get(a.uniqueIdentifier);
+                  const indexB = identifierIndexMap.get(b.uniqueIdentifier);
+                  return indexA - indexB;
+                });
+                tempFilteredProducts = sortedTempProducts
+              }
             return {
                 ...state,
                 filteredProducts: tempFilteredProducts
@@ -113,7 +133,8 @@ const reducer = (state, action) => {
                 const image = action.payload
                 console.log(image)
                 return {
-                    ...state
+                    ...state,
+                    searchImage: image
                 }
             break;
             case "CLEAR_FILTERS":
@@ -128,6 +149,7 @@ const reducer = (state, action) => {
                     price: 0,
                     maxPrice: 0,
                     minPrice: 0,
+                    query_image: null
                 }
             }
             break;

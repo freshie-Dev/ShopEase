@@ -10,7 +10,7 @@ const SellerNavigationProvider = ({ children }) => {
         productForm: false,
         inventory: false,
         imageVerification: false,
-        customers: false
+        orders: false
     })
 
     const goto = (pageName) => {

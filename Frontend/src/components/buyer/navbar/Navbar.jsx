@@ -19,15 +19,17 @@ const Navbar = () => {
 
   return (
     <LocalStyles>
-      <div className=" fixed top-0 w-screen h-[100px] bg-[#BB9773] text-[#D9A470]   flex justify-between items-center px-2 border-[white] border-b-2">
+      <div className=" fixed z-[1000] top-0 w-screen h-[100px] bg-[#BB9773] text-[#D9A470]   flex justify-between items-center px-2 border-[white] border-b-2">
         {/* //! Logo */}
         <h1 className="text-4xl font-bold text-[white]">ShopEase</h1>
 
         {/* //! Resposive Menu */}
-        <Menu mobileNav={mobileNav} userInfo={userInfo}/>
+        {userInfo && <Menu mobileNav={mobileNav} userInfo={userInfo}/>}
+        
 
         {/* //!settings */}
-        <Settings userInfo={userInfo}/>
+        {userInfo && <Settings userInfo={userInfo}/>}
+        
 
         {/* //!Hamburger Icon */}
           <img

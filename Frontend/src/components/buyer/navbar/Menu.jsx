@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import useCartContext from "../../../context/cart-context/CartContextProvider";
 import { useUserContext } from "../../../context/user-context/UserContextProvider";
 
@@ -10,7 +10,7 @@ const Menu = ({ mobileNav, userInfo }) => {
   const {cartState} = useCartContext();
 
   const cartLength = cartState.totalItems;
-  const accountDetailsPath = userInfo.usertype === "seller" ? "/seller/account-details" : "/buyer/account-details" 
+  const accountDetailsPath = userInfo && userInfo.usertype === "seller" ? "/seller/account-details" : "/buyer/account-details" 
 
   return (
     <>
@@ -24,7 +24,7 @@ const Menu = ({ mobileNav, userInfo }) => {
         </li>
         <li className="px-2 text-lg ">
           <NavLink className="" to="/buyer/cart">Cart </NavLink>
-          <p className="absolute right-[-5px] top-[-5px] pt-[3px] pr-[3px] w-[20px] h-[20px] rounded-full text-center flex justify-center items-center bg-[#af8153]">{cartLength}</p>
+          <p className="absolute right-[-5px] top-[-5px]  w-[20px] h-[20px] rounded-full  flex justify-center items-center bg-[#af8153]">{cartLength}</p>
         </li>
       </ul>
 
@@ -39,7 +39,7 @@ const Menu = ({ mobileNav, userInfo }) => {
         </p>
         <p className="px-6 my-2 text-lg cursor-pointer" onClick={()=> navigate(accountDetailsPath)}>Account Details</p>
         <p className="px-6 my-2 text-lg cursor-pointer" onClick={()=> navigate('/buyer/orders')}>Your Orders</p>
-        <p className="px-6 my-2 text-lg cursor-pointer" onClick={()=> {logOut(); navigate('/register')}}>Sign Out</p>
+        <Link className="px-6 my-2 text-lg cursor-pointer" to="/" onClick={()=> {logOut()}}>Sign Out</Link>
 
         <h1 className="p-2 my-2 text-2xl font-bold bg-[#916E4B]">Goto</h1>
 

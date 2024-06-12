@@ -21,8 +21,6 @@ const { verifyToken } = require('../middleware/middleware.js'); // Middleware fu
 
 //! POST A NEW PRODUCT add product
 router.post('/postproduct', upload.single('original_product_image'), verifyToken, async (req, res) => {
-    console.log("i am running")
-    console.log(req.body)
 
     const { userId, title, price, description, product_image, image_filename, attributes, categories, customizable, isRemoveBgChecked } = req.body;
     try {
@@ -88,7 +86,6 @@ router.route('/all')
     .get(async (req, res) => {
         try {
             const products = await Product.find();
-            console.log(products)
             res.status(200).send(products);
 
         } catch (error) {
@@ -114,7 +111,7 @@ router.route('/productsByUniqueIdentifiers')
     .post(async (req, res) => {
         try {
             const uniqueIdentifiers = req.body.uniqueIdentifiers; // Get the unique identifiers from the query parameters
-            console.log(uniqueIdentifiers)
+            // console.log(uniqueIdentifiers)
             // Assuming your Product model has a field named 'uniqueIdentifier'
             const products = await Product.find({ uniqueIdentifier: { $in: uniqueIdentifiers } });
             res.status(200).json(products);

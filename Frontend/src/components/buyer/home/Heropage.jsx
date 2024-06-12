@@ -8,7 +8,7 @@ const Heropage = () => {
   const { section1 } = heroPageContent;
   return (
     // <section className=" flex flex-col md:flex-row  w-full h-[87vh] text-black ">
-    <div className="w-full  flex justify-center items-center min-h-[87vh] bg-[#F0D8C0]">
+    <div className="w-full  flex justify-center items-center min-h-[87vh] bg-[#F0D8C0] mt-[100px]">
       <div className="flex flex-col justify-center items-center md:flex-row  w-full  ">
         <div className="md:w-[50%] md:min-h-[80vh] p-4 text-[#f7ede5] bg-[#C7AA8C] m-4 rounded-md">
           {" "}

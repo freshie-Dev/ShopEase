@@ -3,20 +3,25 @@ import UserContext from "./UserContext";
 import axios from "axios";
 
 import reducer from "../../reducers/UserReducer";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
-  loggedInUserInfo: {
-    username: "",
-    email: "",
-    usertype: "",
-    cart: "",
-    orders: "",
-    address: "",
-  },
+  // loggedInUserInfo: {
+  //   username: "",
+  //   email: "",
+  //   usertype: "",
+  //   cart: "",
+  //   orders: "",
+  //   address: "",
+  // },
+  loggedInUserInfo: null,
+  isLoading: false,
 };
 
 const UserProvider = ({ children }) => {
   const baseUrl = import.meta.env.VITE_REACT_APP_API_BASE_URL;
+
+  const navigate = useNavigate();
 
   const [userState, dispatch] = useReducer(reducer, initialState);
   const [address, setAddress] = useState([]);
@@ -24,6 +29,7 @@ const UserProvider = ({ children }) => {
   //! 1: Sign Up User
   const signUpUser = async (signUpCredentials) => {
     try {
+      dispatch({ type: "SET_LOADING_TRUE" });
       const response = await axios.post(`${baseUrl}auth/`, signUpCredentials);
       const data = response.data;
       const {
@@ -31,6 +37,7 @@ const UserProvider = ({ children }) => {
         token,
       } = data;
 
+      dispatch({ type: "SET_LOADING_FALSE" });
       dispatch({
         type: "SAVE_USER_INFO",
         payload: {
@@ -55,6 +62,7 @@ const UserProvider = ({ children }) => {
   //! 2: Login User
   const loginUser = async (loginCredentials) => {
     try {
+      dispatch({ type: "SET_LOADING_TRUE" });
       const response = await axios.post(
         `${baseUrl}auth/login`,
         loginCredentials
@@ -79,7 +87,8 @@ const UserProvider = ({ children }) => {
           address,
         },
       });
-
+      
+      dispatch({ type: "SET_LOADING_FALSE" });
       return { success: "true", userType: usertype };
     } catch (error) {
       return { success: false, message: error.response.data.message };
@@ -89,6 +98,8 @@ const UserProvider = ({ children }) => {
   //! 3: Log Out User
   const logOut = () => {
     localStorage.clear();
+    dispatch({type: "CLEAR_USER_STATE"})
+
   };
 
   //! 4: Update Field
@@ -172,7 +183,6 @@ const UserProvider = ({ children }) => {
 
   //! 7: Add Order
   const addOrder = async () => {
-    
     try {
       const order = JSON.parse(localStorage.getItem("cart"));
       const token = localStorage.getItem("token");
@@ -181,19 +191,27 @@ const UserProvider = ({ children }) => {
           token,
         },
       };
-
-      const response = await axios.post(`${baseUrl}auth/add_order`,order, config);
-      const data = response.data;
-
-      if(data.success) {
-        Array
-        localStorage.setItem("cart", JSON.stringify(new Array()));
+      if (order.length === 0) {
+        return { message: "Cart is empty", result: false };
+      } else {
+        localStorage.setItem("cart", []);
       }
+
+      const response = await axios.post(
+        `${baseUrl}auth/add_order_by_card`,
+        order,
+        config
+      );
+      const data = response.data;
+      console.log(data)
+      localStorage.setItem('cart', []);
       return { message: data.message, result: true };
     } catch (error) {
       return { message: "Error while Updating Orders", result: false };
     }
   };
+
+  
 
   return (
     <UserContext.Provider
@@ -208,9 +226,14 @@ const UserProvider = ({ children }) => {
         address,
         addOrder,
         userState,
+        ...userState,
       }}
     >
-      {children}
+      {userState.isLoading ? (
+        <h1 className="mt-[100px] text-7xl">Loading...</h1>
+      ) : (
+        children
+      )}
     </UserContext.Provider>
   );
 };

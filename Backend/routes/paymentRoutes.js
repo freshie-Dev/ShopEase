@@ -39,6 +39,7 @@ router.route('/')
         };
       });
       const productsData = await Promise.all(productPromises);
+      
       const shipping_options = [
         {
           shipping_rate_data: {
@@ -104,67 +105,6 @@ router.route('/')
     }
   });
 
-//! WEB HOOKS
-
-// server.js
-//
-// Use this sample code to handle webhook events in your integration.
-//
-// 1) Paste this code into a new file (server.js)
-//
-// 2) Install dependencies
-//   npm install stripe
-//   npm install express
-//
-// 3) Run the server on http://localhost:4242
-//   node server.js
-
-// This is your Stripe CLI webhook secret for testing your endpoint locally.
-let endpointSecret;
-endpointSecret = "whsec_e2f6ad3a189d64e82f250d8b2eec7cc04a7f32637c1e28e85c54ed0b8a22a4f4";
-
-router.route("/webhook")
-  .post( express.raw({ type: 'application/json' }), (req, res) => {
-    const sig = req.headers['stripe-signature'];
-
-    let data;
-    let eventType;
-
-    if (endpointSecret) {
-      let event;
-      try {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-        console.log("Webhook verified")
-      } catch (err) {
-        console.log(`Webhook Error: ${err.message}`)
-        res.status(400).send(`Webhook Error: ${err.message}`);
-        return;
-      }
-      data = event.data.object;
-      eventType = event.type;
-    } else {
-      data = req.body.data.object;
-      eventType = req.body.type;
-    }
-
-
-    // Handle the event
-    switch (eventType) {
-      case 'checkout.session.completed':
-        stripe.customer.retrieve(data.customer).then((customer) => {
-          console.log(customer);
-          console.log("data", data);
-        }).catch(err => console.log(err.message))
-        break;
-      // ... handle other event types
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-
-    // Return a 200 res to acknowledge receipt of the event
-    // res.send().end;
-    res.status(200).send().end();
-  });
 
 
 module.exports = router;

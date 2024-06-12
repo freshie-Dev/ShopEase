@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');   // for encrypting passowrd
 
 const { User } = require('../DB.js');
 const { Product } = require('../DB.js');
+const { Order } = require('../DB.js');
 const { transporter, generateOTP, verifyToken } = require('../middleware/middleware.js'); // middle functions
 
 const stripe = require('stripe')("sk_test_51PIsNORtrR5OEeMFvqNdReTVFRg1ZtUA9K8hV1FPQAKEBzC4rzH33dplSeKaCeJGE4y08dLlGWtV35VWMas5dgGm00dzCBOlDB");
@@ -140,6 +141,7 @@ router.route('/updateinfo')
         }
     });
 
+//! verify OTP
 router.route('/verifyotp')
     .post(verifyToken, async (req, res) => {
 
@@ -171,9 +173,7 @@ router.route('/verifyotp')
 
 
     })
-
 //! Route to save user address information
-
 router.route('/save_address')
     .post(verifyToken, async (req, res) => {
         try {
@@ -196,8 +196,10 @@ router.route('/save_address')
             });
 
             await user.save();
+            const updatedUserAddress = user.address;
 
-            res.status(200).json({ message: 'Address saved successfully', success: true });
+
+            res.status(200).json({ message: 'Address saved successfully', success: true, updatedUserAddress });
         } catch (error) {
             console.log(error, 'Server error occurred while saving address');
             res.status(500).json({ error: 'Server error occurred', success: false, message: 'Server under maintenance' });
@@ -230,13 +232,135 @@ router.route('/address').get(verifyToken, async (req, res) => {
 
 });
 
-//! Route to save order
-router.route('/add_order')
+//! Route to delete a specific address
+router.route('/delete_address/:addressId').delete(verifyToken, async (req, res) => {
+    try {
+        const { addressId } = req.params;
+        const user = await User.findById(req.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Find the address by ID and remove it
+        user.address = user.address.filter(address => address._id.toString() !== addressId);
+
+        await user.save();
+        res.status(200).json({ message: 'Address deleted successfully', success: true, updatedUserAddress: user.address });
+    } catch (error) {
+        console.log(error, 'Server error occurred while deleting address');
+        res.status(500).json({ error: 'Server error occurred', success: false, message: 'Server under maintenance' });
+    }
+});
+
+//! Route to save order by cash
+// router.route('/add_order_by_cash')
+//     .post(verifyToken, async (req, res) => {
+//         try {
+//             const userId = req.userId;  // Get user ID from verified token
+//             const { addressId, cartItems } = req.body
+
+//             const user = await User.findById(userId);
+//             if (!user) {
+//                 return res.status(404).json({ message: 'User not found' });
+//             }
+//             console.log(cartItems)
+//             const order = {
+//                 items: cartItems.map((item) => ({
+//                     productId: item.productId,
+//                     userId: item.userId,
+//                     quantity: item.quantity,
+//                     color: item.color,
+//                     imageUrl: item.imageUrl,
+//                     name: item.title,
+//                     price: item.price,
+//                 })),
+//                 orderDate: Date.now(),
+//                 selectedAddress: addressId,
+//             };
+//             // console.log(order)
+
+//             user.orders.push(order);
+//             await user.save();
+
+//             res.json({ message: 'Order Successful!', result: true });
+//         } catch (error) {
+//             res.status(500).json({ message: 'Order Failed!', result: false });
+//             console.log(error)
+//         }
+//     })
+//! Route to save order by cash
+router.route('/add_order_by_cash')
     .post(verifyToken, async (req, res) => {
         try {
-            const  order  = req.body;
+            const userId = req.userId;  // Get user ID from verified token
+            const { addressId, cartItems } = req.body
+
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            console.log(cartItems)
+            // Group cart items by seller ID
+            const sellerGroups = {};
+            cartItems.forEach((item) => {
+                if (!sellerGroups[item.userId]) {
+                    sellerGroups[item.userId] = [];
+                }
+                sellerGroups[item.userId].push({
+                    productId: item._id,
+                    quantity: item.quantity,
+                    color: item.color,
+                    imageUrl: item.image,
+                    name: item.title,
+                    price: item.price,
+                });
+            });
+            console.log("seller groups: ", sellerGroups)
+
+            // Create orders for each seller
+            for (const sellerId in sellerGroups) {
+                const order = {
+                    sellerId,
+                    customerId: userId,
+                    items: sellerGroups[sellerId],
+                    orderDate: Date.now(),
+                    selectedAddress: addressId,
+                };
+                let int = 1;
+                console.log(int)
+                console.log(order)
+                // Save order to Orders collection 
+                const newOrder = new Order(order);
+                await newOrder.save();
+
+                //? Add order to seller's orders array
+                // const seller = await User.findById(sellerId);
+                // if (seller) {
+                //     seller.orders.push(newOrder._id);
+                //     await seller.save();
+                // }
+            }
+
+            res.json({ message: 'Order Successful!', result: true });
+        } catch (error) {
+            res.status(500).json({ message: 'Order Failed!', result: false });
+            console.log(error)
+        }
+    })
+
+
+
+//! Route to save order by card
+router.route('/add_order_by_card')
+    .post(verifyToken, async (req, res) => {
+        try {
+            const order = req.body;
             const userId = req.userId;  // Get user ID from verified token
 
+            if (order.length === 0) {
+                return res.status(400).json({ message: 'Order is empty', success: false });
+            }
             // Create an array to hold the order items
             const orderItems = [];
 
@@ -246,12 +370,12 @@ router.route('/add_order')
                 if (product) {
                     orderItems.push({
                         productId: product._id,
+                        userId: product.userId,
                         quantity: item.quantity,
                         color: item.color,
                         imageUrl: product.imageUrl,
                         name: product.title,
                         price: product.price,
-                        brand: product.brand,
                     });
                 }
             }
@@ -262,7 +386,7 @@ router.route('/add_order')
                 user.orders.push({ items: orderItems });
                 await user.save();
                 res.status(200).json({ success: true, message: 'Order placed successfully', orders: user.orders });
-            } else {    
+            } else {
                 res.status(404).json({ success: false, message: 'User not found' });
             }
         } catch (error) {
@@ -270,5 +394,109 @@ router.route('/add_order')
             res.status(500).json({ success: false, message: 'Internal Server Error' });
         }
     });
+
+//! Route to fetch user customers
+router.route('/customers')
+    .get(verifyToken, async (req, res) => {
+        try {
+            const sellerId = req.userId;
+
+            // Find all products by the seller
+            const products = await Product.find({ userId: sellerId }).select('_id');
+            // const productIds = products.map(product => product._id); // array of product id's
+            const productIds = products.map(product => product._id.toString()); // Convert _id to strings
+            console.log("product ids", productIds)
+
+            // Find all users who have the seller's products in their cart or orders
+            const customers = await User.find({
+                $or: [
+                    { 'cart.productId': { $in: productIds } },
+                    { 'orders.items.productId': { $in: productIds } }
+                ]
+            }).select('username email phone address orders');
+
+
+
+
+            let orderss = [];
+
+            customers.map(customer => {
+                orderss.push(customer.orders)
+                return customer.orders.map(order => {
+                    order.items.map(item => {
+                        console.log(JSON.stringify(item.productId), JSON.stringify(productIds[0]), JSON.stringify(productIds[1]))
+                        // console.log(/* true or false whether item.productId exists in  "const productIds"*/)
+                        // console.log(JSON.stringify(item.productId) === JSON.stringify(productIds[1])) // gives true or false
+                        console.log(productIds.includes(item.productId.toString())) // always gives false.
+                    })
+                    return
+                })
+            })
+
+            // Filter orders to include only items uploaded by the seller
+            const filteredCustomers = customers.map(customer => {
+                const filteredOrders = customer.orders.map(order => {
+                    const filteredItems = order.items.filter(item => productIds.includes(item.productId.toString()));
+                    return { ...order._doc, items: filteredItems };
+                });
+                return { ...customer._doc, orders: filteredOrders };
+            });
+
+            res.status(200).json({ success: true, message: 'Customers fetched successfully', customers, filteredCustomers, productIds });
+        } catch (error) {
+            console.error('Error while fetching customers:', error);
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    });
+
+//! Fetch orders for seller
+router.route('/seller_orders')
+    .get(verifyToken, async (req, res) => {
+        try {
+            const sellerId = req.userId;
+            const orders = await Order.find({ sellerId: sellerId });
+
+            const fetchedOrders = await Promise.all(orders.map(async (order) => {
+                const customer = await User.findById(order.customerId);
+                return {
+                    _id: order._id,
+                    customer: {
+                        username: customer.username,
+                        email: customer.email
+                    },
+                    items: order.items,
+                    orderDate: order.orderDate,
+                    selectedAddress: order.selectedAddress,
+                    status: order.status
+                };
+            }));
+
+            res.status(200).json({ success: true, message: 'Orders fetched successfully', fetchedOrders });
+        } catch (error) {
+            console.error('Error while fetching orders:', error);
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    });
+
+
+//! Update order status
+    router.put('/update_order_status/:orderId', async (req, res) => {
+        try {
+          const orderId = req.params.orderId;
+          const statusValue = req.body.status;
+      
+          // Update the order status in the database
+          const order = await Order.findByIdAndUpdate(orderId, { status: statusValue }, { new: true });
+      
+          if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+          }
+      
+          res.status(200).json({ message: 'Order status updated successfully', success: true });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Error updating order status', success: false });
+        }
+      });
 
 module.exports = router;

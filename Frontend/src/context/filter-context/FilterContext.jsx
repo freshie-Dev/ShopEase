@@ -15,12 +15,13 @@ const initialState = {
   allProducts: [],
   gridView: true,
   sortingValue: "default",
-  searchImage: null,
+  queryImage: null,
   filters: {
     text: "",
     category: "all",
     colors: "all",
     brand: "all",
+    queryImage: null,
     price: 0,
     maxPrice: 0,
     minPrice: 0,
@@ -49,6 +50,13 @@ const FilterProvider = ({ children }) => {
     let { name, value } = event.target;
 
     return dispatch({ type: "UPDATE_FILTERS_VALUE", payload: { name, value } });
+  };
+
+  const updateQueryImageFilterValue = (queryImage) => {
+    let { name, value } = queryImage;
+    
+
+    return dispatch({ type: "UPDATE_QUERY_IMAGE_FILTERS_VALUE", payload: { name, value } });
   };
 
   //! search by image
@@ -92,6 +100,7 @@ const FilterProvider = ({ children }) => {
   useEffect(() => {
     dispatch({ type: "FILTER_PRODUCTS" });
   }, [filterState.filters]);
+  
   // useEffect(() => {
   //     dispatch({type: "FILTER_PRODUCTS"});
   //     dispatch({type: "GET_SORTED_PRODUCTS"});
@@ -117,6 +126,7 @@ const FilterProvider = ({ children }) => {
         // setListView,
         // sortProducts,
         updateFilterValue,
+        updateQueryImageFilterValue,
         getCategories,
         getColors,
         clearFilters,

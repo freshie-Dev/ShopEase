@@ -19,7 +19,7 @@ const Products = () => {
     <LocalStyles>
       <div className="main   text-[#d9a470]">
 
-        <div className="h-[87vh] p-2 items md:w-[300px] md:block hidden">
+        <div className="h-[87vh] w-[350px] p-2 items  md:block hidden">
           <FilterSection/>
         </div>
 
@@ -37,6 +37,7 @@ const LocalStyles = styled.div`
   .main {
     /* display: flex; */
     flex-direction: row;
+    justify-content: space-between;
     align-items: flex-start;
   }
 `;

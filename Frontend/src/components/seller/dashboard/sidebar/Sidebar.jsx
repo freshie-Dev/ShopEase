@@ -8,21 +8,24 @@ import {
   BsListCheck,
 } from "react-icons/bs";
 import { FaRegImages } from "react-icons/fa6";
+import { IoPowerSharp } from "react-icons/io5";
 import { useSellerNavigationContext } from "../../../../context/seller-navigation/SellerNavigationContext";
 import { Link, useLocation } from "react-router-dom";
+import { useUserContext } from "@/context/user-context/UserContextProvider";
 
 const Sidebar = () => {
   const { goto } = useSellerNavigationContext();
+  const {logOut} = useUserContext();
   const location = useLocation();
 
   return (
-    <DIV className="min-h-full py-[1px] min-w-[350px] bg-color1 md:block hidden text-white">
+    <DIV className="min-h-full py-[1px] min-w-[350px] bg-color1 md:block hidden  text-white">
       <ul>
         <li>
           <BsCart3 size={30} />
-          <Link className="text-[1.75rem]" to="/">ShopEase</Link>
+          <Link className="text-[1.75rem]" >ShopEase</Link>
         </li>
-        <li onClick={() => goto("home")}>
+        <li >
           <BsGrid1X2Fill size={20} />
           <Link
             to="/seller/dashboard/home"
@@ -31,7 +34,7 @@ const Sidebar = () => {
             DashBoard
           </Link>
         </li>
-        <li onClick={() => goto("productForm")}>
+        <li >
           <BsFillArchiveFill size={20} />
           <Link
             to="/seller/dashboard/add-product"
@@ -40,7 +43,7 @@ const Sidebar = () => {
             Add Product
           </Link>
         </li>
-        <li onClick={() => goto("imageVerification")}>
+        <li >
           <FaRegImages size={20} />
           <Link
             to="/seller/dashboard/image-verification"
@@ -49,22 +52,32 @@ const Sidebar = () => {
             Image Verification
           </Link>
         </li>
-        <li onClick={() => goto("customers")}>
+        <li >
           <BsPeopleFill size={20} />
           <Link
-            to="/seller/dashboard/customers"
-            className={`text-[1.2rem] ${location.pathname === '/seller/dashboard/customers' ? 'active' : ''}`}
+            to="/seller/dashboard/orders"
+            className={`text-[1.2rem] ${location.pathname === '/seller/dashboard/orders' ? 'active' : ''}  duration-300`}
           >
-            Customers
+            Orders
           </Link>
         </li>
-        <li onClick={() => goto("inventory")}>
+        <li >
           <BsListCheck size={20} />
           <Link
             to="/seller/dashboard/inventory"
-            className={`text-[1.2rem] ${location.pathname === '/seller/dashboard/inventory' ? 'active' : ''}`}
+            className={`text-[1.2rem] ${location.pathname === '/seller/dashboard/inventory' ? 'active' : ''}  duration-300`}
           >
             Inventory
+          </Link>
+        </li>
+        <li >
+          <IoPowerSharp size={24} className="text-red-500"/>
+          <Link
+            className={`text-[1.2rem] hover:text-red-500 duration-300 ${location.pathname === '/seller/dashboard/customers' ? 'active' : ''}`}
+            to={'/'} 
+            onClick={logOut}
+          >
+            Log Out
           </Link>
         </li>
       </ul>

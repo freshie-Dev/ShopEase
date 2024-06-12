@@ -3,9 +3,19 @@ import { maxStock } from "../helpers/helpers";
 export default function reducer(state, action) {
   switch (action.type) {
     case "ADD_TO_CART":
-      const { id, color, size, quantity, product, customizedImage, customSize } = action.payload;
+      const {
+        id,
+        userId,
+        color,
+        size,
+        quantity,
+        product,
+        customizedImage,
+        customSize,
+      } = action.payload;
+      // localStorage.setItem('cart', action.payload)
       console.log(action.payload);
-    
+
       let tempItem;
       if (customizedImage) {
         console.log("customized image exists in reducer");
@@ -14,16 +24,17 @@ export default function reducer(state, action) {
         console.log("customized image does not exist in reducer");
         tempItem = state.cart.find((item) => item.id === id + color + size);
       }
-    
+
       if (tempItem) {
         console.log("exists", tempItem);
       } else {
         console.log("not exists");
       }
-    
+
       if (!tempItem && customizedImage) {
         const tempCartProduct = {
           _id: id,
+          userId,
           id: id + customSize,
           title: product.title,
           quantity,
@@ -52,6 +63,7 @@ export default function reducer(state, action) {
       } else {
         const tempCartProduct = {
           _id: id,
+          userId,
           id: id + color + size,
           title: product.title,
           color,
@@ -68,6 +80,14 @@ export default function reducer(state, action) {
         };
       }
       break;
+
+    case "ADD_TO_CART_FROM_LOCALSTORAGE":
+      const cart = action.payload;
+
+      return {
+        ...state,
+        cart,
+      };
 
     case "CART_TOTAL_ITEMS":
       const cartLength = state.cart.length;
@@ -142,6 +162,9 @@ export default function reducer(state, action) {
       );
       return { ...state, cart: tempCartItems };
       break;
+
+    case "EMPTY_CART":
+      return { ...state, cart: new Array() };
     // case 'ADD_TO_CART':
     //     const { id, color, quantity, product } = action.payload;
 

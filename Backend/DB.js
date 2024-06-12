@@ -146,6 +146,10 @@ const userSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: 'Product',
             },
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            },
             quantity: {
                 type: Number,
             },
@@ -160,14 +164,15 @@ const userSchema = new Schema({
             },
             price: {
                 type: Number,
-            },
-            brand: {
-                type: String,
             }
         }],
         orderDate: {
             type: Date,
             default: Date.now
+        },
+        selectedAddress: {
+            type: Schema.Types.ObjectId,
+            ref: 'address'
         }
     }],
     otp: {
@@ -182,10 +187,67 @@ const userSchema = new Schema({
     },
 });
 
+const orderSchema = new mongoose.Schema({
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    items: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true
+        },
+        quantity: {
+          type: Number,
+          required: true
+        },
+        color: {
+          type: String
+        },
+        imageUrl: {
+          type: String
+        },
+        name: {
+          type: String
+        },
+        price: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
+    orderDate: {
+      type: Date,
+      default: Date.now
+    },
+    selectedAddress: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address',
+      required: true
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'hipped', 'delivered', 'cancelled'],
+      default: 'pending'
+    }
+  });
+
+
+
 //! Creating a model for the product:
 const Product = mongoose.model('Product', productSchema);
 //! Creating a model for the user:
 const User = mongoose.model('User', userSchema);
+//! Creating a model for the Orders:
+const Order = mongoose.model('Order', orderSchema);
 
 
-module.exports = { Product, User };
+module.exports = { Product, User, Order };

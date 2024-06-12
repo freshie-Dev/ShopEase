@@ -16,6 +16,7 @@ const verifyToken = (req, res, next) => {
         next();
     } catch (error) {
         console.log("invalid token or token expired")
+        res.json({message: "Invalid Token", tokenStatus: false})
     }
 
 }

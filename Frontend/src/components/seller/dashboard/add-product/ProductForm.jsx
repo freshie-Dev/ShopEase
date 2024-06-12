@@ -33,9 +33,9 @@ function ProductForm() {
   const handleSubmit = async (e, isRemoveBgChecked, customizable) => {
     const status =  await handleFormSubmit(e, isRemoveBgChecked, customizable);
     if (status.success) {
-      enqueueSnackbar(status.message, { variant: "success" });
+      enqueueSnackbar(status.message, { variant: "success", autoHideDuration: 2000  });
     } else {
-      enqueueSnackbar(status.message, { variant: "error" });
+      enqueueSnackbar(status.message, { variant: "error", autoHideDuration: 2000  });
     }
   };
 

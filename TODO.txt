@@ -1,3 +1,6 @@
-1. upload each a product with same image with 2 different brands.
-2. do verification from a seller account to check for duplicate images.
-3. create users table using shadcn table
+Fix cash on delivery checkout.
+-----------
+Create an order page for seller to see pending and complete orders.
+Fix Customers for seller.
+------------
+Createa Inventory page

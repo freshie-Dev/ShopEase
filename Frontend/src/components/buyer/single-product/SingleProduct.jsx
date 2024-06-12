@@ -9,7 +9,6 @@ import useCartContext from "../../../context/cart-context/CartContextProvider";
 import CustomButton from "../../../custom-components/HoverButton";
 
 import custom_shirt_image from "../../../assets/custom.jpg";
-import { enqueueSnackbar } from "notistack";
 
 const SingleProduct = () => {
   const navigate = useNavigate();
@@ -32,6 +31,7 @@ const SingleProduct = () => {
     attributes,
     categories,
     customizable,
+    userId,
   } = singleProduct;
 
   const [customSize, setCustomSize] = useState("");
@@ -230,6 +230,7 @@ const SingleProduct = () => {
             onClick={() => {
               addToCart(
                 productId,
+                userId,
                 selectedColor,
                 selectedSize,
                 selectedQuantity,

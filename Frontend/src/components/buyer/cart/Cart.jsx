@@ -11,10 +11,12 @@ const Cart = () => {
   const { cartState, increaseQuantity, decreaseQuantity, removeCartItem } =
     useCartContext();
     
-    const cart = cartState.cart.length !== 0  ? cartState.cart : JSON.parse(localStorage.getItem('cart'));
+
+
+    const cart = cartState.totalItems !== 0  ? cartState.cart : localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
 
   // if (cartState.totalItems === 0) {
-  if (cartState.cart.length === 0) {
+  if (cart.length === 0) {
     return (
       <div className="mt-[100px] h-[60vh] flex flex-col justify-center bg-[#F0D8C0] items-center">
         <h1 className="py-2 my-3 font-extrabold text-xl md:text-2xl text-[white]">Currently your cart is empty</h1>
@@ -55,7 +57,7 @@ const Cart = () => {
                       width={110}
                       alt='Custom product'
                     />
-                    <div className="">
+                    <div className=" text-left pl-2">
                       <h3 className="font-bold text-lg">{title}</h3>
                       <div className="ml-2 my-2 text-[#424242]">
                         <p className="inline">Color: </p>
@@ -79,7 +81,7 @@ const Cart = () => {
                     <b>{price} Rs</b>
                   </div>
                   <div className="text-center">
-                    <b className="">Quantity</b>
+                    <p className="">Quantity</p>
                     <div className="flex w-full justify-evenly">
                       <button
                         onClick={() => decreaseQuantity(id)}
@@ -97,7 +99,7 @@ const Cart = () => {
                     </div>
                   </div>
                   <div>
-                    <b className="">Total</b>
+                    <p className="">Total</p>
                     <p className="p-2 rounded-md font-bold bg-[#d9a470]">
                       {price * quantity} Rs
                     </p>

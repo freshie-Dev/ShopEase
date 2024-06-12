@@ -27,7 +27,7 @@ const Settings = ({ userInfo }) => {
         
         <p className="px-6 my-2 text-lg min-w-max"><NavLink to={accountDetailsPath} >Account Details</NavLink></p>
         {userInfo.type === "buyer" && <p className="px-6 my-2 text-lg min-w-max"><NavLink to='/buyer/orders'>Orders</NavLink></p>}
-        <p className="px-6 my-2 text-lg min-w-max"><NavLink to={'/register'} onClick={()=> {logOut()}}>Sign Out</NavLink></p>
+        <p className="px-6 my-2 text-lg min-w-max"><NavLink to="/" onClick={()=> {logOut()}}>Sign Out</NavLink></p>
 
       </div>
 
