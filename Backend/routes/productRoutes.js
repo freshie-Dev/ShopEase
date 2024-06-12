@@ -121,6 +121,60 @@ router.route('/productsByUniqueIdentifiers')
         }
     })
 
+//! Fetch products for single seller
+router.route('/seller_products')
+    .get(verifyToken, async(req, res) => {
+        try {
+            const sellerId = req.userId;
+            if(!sellerId) {
+                return res.status(401).json({ success: false, message: 'Unauthorized' });
+            }
+            const products = await Product.find({ userId: sellerId });
+            res.status(200).json(products);
+        } catch (error) {
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+            console.log(error)
+        }
+            
+    })
+
+//! Delete a single product for seller
+router.route('/delete_product/:productId')
+ .delete(verifyToken, async (req, res) => {
+    try {
+      const productId = req.params.productId;
+      const userId = req.userId; 
+  
+      const product = await Product.findById(productId);
+  
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+  
+      if (product.userId.toString() !== userId) {
+        return res.status(403).json({ message: 'You are not authorized to delete this product' });
+      }
+
+      const deletedProduct = await Product.findByIdAndRemove(productId).select('uniqueIdentifier');
+    //   const deletedProduct = await Product.findById(productId).select('uniqueIdentifier');
+  
+      const updatedProducts = await Product.find({ userId }); 
+
+      res.status(200).json({ message: 'Product deleted successfully', updatedProducts, deletedProduct });
+    } catch (error) {
+      console.error(error);
+      console.log(error)
+      res.status(500).json({ message: 'Error deleting product' });
+    }
+  }) 
+    // Table,
+    // TableBody,
+    // TableCaption,
+    // TableCell,
+    // TableHead,
+    // TableHeader,
+    // TableRow,
+
 
 
 module.exports = router;

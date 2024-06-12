@@ -17,9 +17,6 @@ model = tf.keras.Sequential([model, GlobalMaxPool2D()])
 BASE_PATH = 'blueprints/save_features/'
 
 def upload_image(image_path):
-    print("hsahlaskdfhslakdfhsakdjfhlskadfhlsadkfhjasdklfhlksadhfklasdfhskdjflshha")
-    print(image_path)
-
     filename=[]          
     feature_list = []
     

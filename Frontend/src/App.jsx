@@ -22,6 +22,7 @@ import Payment from "./components/buyer/payment-status/Payment";
 import Home from "./components/seller/dashboard/home/Home";
 import ProductForm from "./components/seller/dashboard/add-product/ProductForm";
 import ImageVerification from "./components/seller/dashboard/Image-verification/ImageVerification";
+import Inventory from "./components/seller/dashboard/inventory/Inventory";
 
 function App() {
   return (
@@ -54,11 +55,9 @@ function App() {
         <Route path="/seller/dashboard/home" element={<Home />} />
         <Route path="/seller/account-details" element={<AccountDetails />} />
         <Route path="/seller/dashboard/add-product" element={<ProductForm />} />
-        <Route
-          path="/seller/dashboard/image-verification"
-          element={<ImageVerification />}
-        />
+        <Route path="/seller/dashboard/image-verification" element={<ImageVerification />}/>
         <Route path="/seller/dashboard/orders" element={<Orders />} />
+        <Route path="/seller/dashboard/inventory" element={<Inventory/>} />
       </Route>
     </Routes>
   );

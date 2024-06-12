@@ -43,11 +43,6 @@ def similarity_check(imgs, userId):
     duplicates = []
     for i1 in range(len(imgs)):
         
-        # if os.path.basename(imgs[i1]['p']) starts with userId then run the nested loop
-        # if os.path.basename(imgs[i1]['p']).startswith(userId):
-        #     print (f'true: {os.path.basename(imgs[i1]['p'])}')
-        # else: 
-        #     print (f'false: {os.path.basename(imgs[i1]['p'])}')
         print("-----------------------------------------------------------")
         print(os.path.basename(imgs[i1]['p']).startswith(userId))
         print(os.path.basename(imgs[i1]['p']))
@@ -76,35 +71,6 @@ def similarity_check(imgs, userId):
     
     return duplicates
     
-# def similarity_check(imgs, userId):
-#     """
-#     Checks similarity.
-#     """
-#     duplicates = []
-#     for i1 in range(len(imgs)):
-#         if os.path.basename(imgs[i1]['p']).startswith(userId):
-#             # print(f"OUTER image {imgs[i1]['p']} ")
-
-#                 # Run the nested loop only if the image path starts with userId
-#             for i2 in range(i1 + 1, len(imgs)):
-#                 # print(f".....INNER image ")
-#                 FLANN_INDEX_KDTREE = 1
-#                 index_params = dict(
-#                     algorithm=FLANN_INDEX_KDTREE,
-#                     trees=5
-#                 )
-#                 search_params = dict(checks=50)
-#                 flann = cv.FlannBasedMatcher(index_params, search_params)
-#                 matches = flann.knnMatch(imgs[i1]['des'], imgs[i2]['des'], k=2)
-#                 matchesCount = 0
-#                 for i, (m, n) in enumerate(matches):
-#                     if m.distance < DEFAULT_FEATURES_DISTANCE * n.distance:
-#                         matchesCount += 1
-#                 if matchesCount > DEFAULT_MIN_MATCHES:
-#                     duplicates.append(imgs[i1]['p'])
-#                     duplicates.append(imgs[i2]['p'])
-
-#     return duplicates
 
 # image detection route
 @image_verification_bp.route('/verify_images')
@@ -135,22 +101,3 @@ def index():
         return jsonify({'error': str(e)})
 
 
-       
-        # print("------------------------------------------------------------------------------------------") 
-        # Assuming 'duplicates' is your array of image paths
-
-
-# def delete(duplicates):
-#     """
-#     Removes duplicated images.
-#     """
-#     deleted_files = []  # To keep track of deleted files
-#     for path in duplicates:
-#         try:
-#             print(f"deleting {path}")
-#             os.remove(path)
-#             deleted_files.append(path)
-#             # print('[DELETED]', path)
-#         except FileNotFoundError:
-#             print('[ERROR] File not found:', path)
-#     # print("Deleted files:", deleted_files)

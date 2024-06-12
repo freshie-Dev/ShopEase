@@ -147,7 +147,7 @@ const Orders = () => {
   }
 
   return (
-    <DIV className="flex-grow p-2 md:p-6 bg-color3 text-white">
+    <DIV className="flex-grow   bg-color2 text-white pt-[50px] px-2 md:p-6">
       <Table className=" overflow-auto ">
         <TableCaption>Order Management</TableCaption>
         <TableHeader>
@@ -169,13 +169,13 @@ const Orders = () => {
               <TableCell className="relative flex flex-col justify-center items-center">
                 <CustomButton
                   onClick={() =>{}}
-                  className="h-[25px] w-[100px] py-0 text-sm border-[1px]"
+                  className="h-[25px] w-[100px] py-0 text-sm border-[1px] font-semibold"
                 >
                   View
                 </CustomButton>
                 <CustomButton
                   onClick={() => setSelectedOrderId((prevValue => {if(prevValue === order._id) {return null} else {return order._id}}))}
-                  className="h-[25px] w-[100px] py-0 text-sm border-[1px]"
+                  className="h-[25px] w-[100px] py-0 text-sm border-[1px] font-semibold"
                 >
                   {selectedOrderId === order._id ? "Cancel" : "Update"}
                 </CustomButton>

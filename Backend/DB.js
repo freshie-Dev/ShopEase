@@ -90,9 +90,14 @@ const productSchema = new mongoose.Schema({
         type: [String], // Assuming categories is an array of strings
         required: true,
     },
+    date: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 //! Creating a schema for user:
+
 const userSchema = new Schema({
     username: {
         type: String,
@@ -187,6 +192,7 @@ const userSchema = new Schema({
     },
 });
 
+//! Creating a schema for orders:
 const orderSchema = new mongoose.Schema({
     sellerId: {
       type: mongoose.Schema.Types.ObjectId,
