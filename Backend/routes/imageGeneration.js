@@ -1,16 +1,14 @@
-// import express from 'express';
-// import { Configuration, OpenAIApi} from 'openai';
-// import OpenAI from 'openai';
+
 const express = require('express')
 const OpenAI = require('openai')
+const dotenv = require('dotenv')
+dotenv.config()
 
-// dotenv.config();
 
 const router = express.Router();
 
 const openai = new OpenAI({
-  // apiKey: "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", // This is also the default, can be omitted
-  apiKey: "sk-proj-EnEaDgXD8A2uLjZFcY9aT3BlbkFJkuLv69SRFeQlGLZoUV7c", // This is also the default, can be omitted
+  apiKey: process.env.OPEN_AI_API_KEY,
 });
 
 router.route('/')
