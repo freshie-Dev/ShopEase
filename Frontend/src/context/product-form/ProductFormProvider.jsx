@@ -148,7 +148,7 @@ const ProductFormProvider = ({ children }) => {
       );
       setIsLoading(false)
       const { success, message } = response.data;
-      // resetProductForm(formElement);
+      resetProductForm(formElement);
       return { success, message };
     } catch (error) {
       console.error("Error submitting form:", error);

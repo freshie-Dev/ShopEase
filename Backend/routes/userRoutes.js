@@ -45,7 +45,7 @@ router.route('/')
                 password: hashedPassword,
                 usertype,
                 otp: { code: otp, expiresAt: new Date(expirationTime * 1000) },
-                address
+                address: {}
             });
             await user.save();
 

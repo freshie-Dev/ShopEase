@@ -4,8 +4,6 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-// Use express.json() middleware to parse JSON request bodies
-// app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -23,9 +21,12 @@ app.use('/products', require('./routes/productRoutes.js'));
 app.use('/auth', require('./routes/userRoutes.js'));
 
 //! 3: User Route 
+app.use('/api/v1/dalle', require('./routes/imageGeneration.js'));
+
+//! 4: User Route 
 app.use('/payment', require('./routes/paymentRoutes.js'));
 
-//! 4: Image route
+//! 5: Image route
 // Serve static files from the 'upload/images' directory
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 

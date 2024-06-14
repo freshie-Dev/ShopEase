@@ -19,9 +19,11 @@ import {
 } from "recharts";
 import styled from "styled-components";
 import { useSellerActionsContext } from "../../../../context/seller-context/SellerContextProvider";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   // const {chartData} = useSellerActionsContext();
+  const navigate = useNavigate()
   const chartData = [
     {
       name: "Page A",
@@ -74,7 +76,7 @@ const Home = () => {
       </h3>
 
       <div className="grid grid-cols-2 lg:grid-cols-2 gap-2  ">
-        <div className="card  bg-green-400">
+        <div  onClick={()=> {navigate('/seller/dashboard/inventory')}} className="card cursor-pointer  bg-green-400">
           <p>Products</p>
           <BsFillArchiveFill className="card_icon" />
         </div>

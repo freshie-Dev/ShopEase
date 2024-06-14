@@ -27,7 +27,6 @@ const ProductProvider = ({children}) => {
 
         try {
             const response = await axios.get(`${baseUrl}products/all`);
-            // const response = await axios.get('https://api.escuelajs.co/api/v1/products')
             const data = response.data;
             // console.log(data)
             dispatch({type: "FETCH_ALL_PRODUCTS", payload: data})

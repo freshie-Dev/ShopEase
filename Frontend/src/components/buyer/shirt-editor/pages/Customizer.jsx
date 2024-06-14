@@ -11,8 +11,13 @@ import { fadeAnimation, slideAnimation } from '../config/motion';
 import { AIPicker, ColorPicker, CustomButton, FilePicker, Tab } from '../components';
 import { useNavigate, useParams } from 'react-router-dom';
 import useCartContext from '../../../../context/cart-context/CartContextProvider';
+import axios from 'axios';
+import useSnackbar from '@/custom-components/notification/useSnackbar';
 
+// AIzaSyAGJtD0fG8AXLZaeAREqNJ3xIes0EnJCXM
 const Customizer = () => {
+  const {showError} = useSnackbar()
+
   const {setCustomizedImage} = useCartContext()
   const { "product-id": productId } = useParams();
   const navigate = useNavigate()
@@ -40,39 +45,51 @@ const Customizer = () => {
           setFile={setFile}
           readFile={readFile}
         />
-      // case "aipicker":
-      //   return <AIPicker 
-      //     prompt={prompt}
-      //     setPrompt={setPrompt}
-      //     generatingImg={generatingImg}
-      //     handleSubmit={handleSubmit}
-      //   />
-      // default:
+      case "aipicker":
+        return <AIPicker 
+          prompt={prompt}
+          setPrompt={setPrompt}
+          generatingImg={generatingImg}
+          handleSubmit={handleSubmit}
+        />
+      default:
         return null;
     }
   }
 
   const handleSubmit = async (type) => {
+
     if(!prompt) return alert("Please enter a prompt");
 
     try {
       setGeneratingImg(true);
 
-      const response = await fetch('http://localhost:8081/api/v1/dalle', {
-        method: 'POST',
+      // const response = await fetch('http://localhost:3002/api/v1/dalle', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({
+      //     prompt,
+      //   })
+      // })
+
+      // const data = await response.json();
+      const response = await axios.post('http://localhost:3002/api/v1/dalle', {
+        prompt: prompt
+      }, {
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt,
-        })
-      })
+        }
+      });
+      
+      const data = response.data;
+      if (response.status === 200) {
+        handleDecals(type, `data:image/png;base64,${data.photo}`)
+      }
 
-      const data = await response.json();
-
-      handleDecals(type, `data:image/png;base64,${data.photo}`)
     } catch (error) {
-      alert(error)
+      showError("Error While apllying texture", {autoHideDuration: 1000})
     } finally {
       setGeneratingImg(false);
       setActiveEditorTab("");
