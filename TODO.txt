@@ -1,6 +1,0 @@
-Fix cash on delivery checkout.
------------
-Create an order page for seller to see pending and complete orders.
-Fix Customers for seller.
-------------
-Createa Inventory page

@@ -44,9 +44,8 @@ const Total = () => {
         
 
 
-        {/* <NavLink to="/buyer/checkout" > go too</NavLink> */}
+        
         <NavLink to="/buyer/checkout"><CustomButton className="border-white mt-10" >Checkout</CustomButton></NavLink>
-        {/* <CustomButton onClick={checkout} className="border-white mt-10" >Checkout</CustomButton> */}
         
 
       </div>

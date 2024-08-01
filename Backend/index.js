@@ -4,7 +4,8 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors());
 
 
@@ -31,10 +32,6 @@ app.use('/payment', require('./routes/paymentRoutes.js'));
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 let port = process.env.PORT;
-
-if (port == null || port == "") {
-  port = 3002;
-}
 
 app.listen(process.env.PORT || port, function() {
   console.log('Server started on port ' + (process.env.PORT || port));

@@ -44,15 +44,13 @@ const Register = () => {
     } else {
       status = await loginUser(values);
     }
-    // if (status.success) {
-    //   navigate('/send_user')
-    //   action.resetForm();
-    // } else {
-    //   enqueueSnackbar(status.message, {
-    //     variant: "error",
-    //     autoHideDuration: 2000,
-    //   });
-    // }
+    if (!status.success) {
+      enqueueSnackbar(status.message, {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+
     //TODO: alert user that login wasnt successfull
   };
   useEffect(() => {
@@ -111,11 +109,10 @@ const Register = () => {
                   >
                     <p className="w-[46%] glass-input p-4"> User type: </p>
                     <label
-                      className={`w-[27%]  p-4 ] ${
-                        selectedUserType !== "buyer"
+                      className={`w-[27%]  p-4 ] ${selectedUserType !== "buyer"
                           ? "glass-input"
                           : "bg-[#D9A470]"
-                      }`}
+                        }`}
                       onClick={() => animateUserTypeInput("buyer")}
                     >
                       <Field
@@ -127,11 +124,10 @@ const Register = () => {
                       Buyer
                     </label>
                     <label
-                      className={`w-[27%] p-4 ] ${
-                        selectedUserType !== "seller"
+                      className={`w-[27%] p-4 ] ${selectedUserType !== "seller"
                           ? "glass-input"
                           : "bg-[#D9A470]"
-                      }`}
+                        }`}
                       onClick={() => animateUserTypeInput("seller")}
                     >
                       <Field

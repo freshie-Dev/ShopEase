@@ -45,14 +45,16 @@ const reducer = (state, action) => {
         },
       };
 
-    case "SET_LOAIDNG_TRUE":
+    case "SET_LOADING_TRUE":
+      console.log("setting loading true")
       return {
         ...state,
         isLoading: true,
       };
       break;
-
-    case "SET_LOAIDNG_FALSE":
+      
+      case "SET_LOADING_FALSE":
+      console.log("setting loading false")
       return {
         ...state,
         isLoading: false,

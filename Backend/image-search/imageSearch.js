@@ -9,7 +9,7 @@ const imagesDir = "../Backend/uploads";
 const modelWeightsDir = "E:/model_weights_edir";
 
 // Load the ResNet18 model
-// const model = await tf.loadLayersModel('file://' + modelWeightsDir);
+const model = await tf.loadLayersModel('file://' + modelWeightsDir);
 model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
 
 

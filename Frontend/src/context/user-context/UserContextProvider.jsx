@@ -1,4 +1,4 @@
-import { useContext, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
 
@@ -51,17 +51,21 @@ const UserProvider = ({ children }) => {
           token,
         },
       });
-
+      console.log(response.data)
       return { success: "true", userType: usertype };
     } catch (error) {
       console.log("Error while signing up " + error);
       return { success: false, message: error.response.data.message };
     }
   };
-
+  useEffect(() => {
+    console.log(userState.isLoading)
+  }, [userState.isLoading])
+  
   //! 2: Login User
   const loginUser = async (loginCredentials) => {
     try {
+      console.log("start")
       dispatch({ type: "SET_LOADING_TRUE" });
       const response = await axios.post(
         `${baseUrl}auth/login`,
@@ -89,8 +93,10 @@ const UserProvider = ({ children }) => {
       });
       
       dispatch({ type: "SET_LOADING_FALSE" });
+      console.log("end")
       return { success: "true", userType: usertype };
     } catch (error) {
+      dispatch({ type: "SET_LOADING_FALSE" });
       return { success: false, message: error.response.data.message };
     }
   };
@@ -229,11 +235,7 @@ const UserProvider = ({ children }) => {
         ...userState,
       }}
     >
-      {userState.isLoading ? (
-        <h1 className="mt-[100px] text-7xl">Loading...</h1>
-      ) : (
-        children
-      )}
+      {children}
     </UserContext.Provider>
   );
 };

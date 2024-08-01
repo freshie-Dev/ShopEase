@@ -71,9 +71,10 @@ router.route('/login')
                 return res.status(404).json({ message: 'Incorrect Credentials' });
             }
 
+            console.log("password", Password)
             // Compare the provided password with the hashed password in the database
-            const isPasswordValid = bcrypt.compare(Password, user.password);
-
+            const isPasswordValid = await bcrypt.compare(Password, user.password);
+            console.log("password validation: ", isPasswordValid)
             // Check if the password is valid
             if (!isPasswordValid) {
                 return res.status(401).json({ message: 'Incorrect Credentials' });

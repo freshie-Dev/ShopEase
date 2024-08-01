@@ -2,7 +2,6 @@ import os
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-from keras import backend as K
 
 def iou(y_true, y_pred):
     def f(y_true, y_pred):

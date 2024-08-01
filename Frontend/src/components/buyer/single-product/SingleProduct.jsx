@@ -226,6 +226,8 @@ const SingleProduct = () => {
             </button>
           </div>
 
+          <p className="text-black">{customizable}</p>
+          <p className="text-black">{customSize}</p>
           <CustomButton
             onClick={() => {
               addToCart(
@@ -241,7 +243,8 @@ const SingleProduct = () => {
               navigate("/buyer/cart");
             }}
             className="min-w-[200px] max-w-[300px] text-xl "
-            disabled={selectedColor === "" || selectedSize === ""}
+            disabled={ customizable ? customSize === "" : selectedSize === ""}
+            // disabled={  selectedColor === "" || selectedSize === ""}
             // disabled = {true}
           >
             Add To Cart

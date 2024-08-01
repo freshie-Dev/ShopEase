@@ -2,8 +2,8 @@ import os
 from flask import Flask, request, jsonify
 import cv2
 import tensorflow as tf
-from keras.applications.resnet50 import ResNet50, preprocess_input
-from keras.layers import GlobalMaxPool2D
+from keras.applications.resnet50 import ResNet50, preprocess_input # type: ignore
+from keras.layers import GlobalMaxPool2D  # type: ignore
 import numpy as np
 from numpy.linalg import norm
 import pickle
@@ -20,6 +20,7 @@ def upload_image(image_path):
     filename=[]          
     feature_list = []
     
+    print(f"from upload_image {image_path}")
     filename.append(image_path)
     feature_list.append(extract_features(image_path, model))
 
