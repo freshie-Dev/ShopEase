@@ -11,13 +11,11 @@ const ImageSearch = () => {
   const [selectedFilename, setSelectedFilename] = useState(null);
   const [onLoading, setOnLoading] = useState(false)
 
-  const handleEmptyInput = () => {
-    showError("Please select an image", { autoHideDuration: 2000 });
-  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedFilename) {
-      handleEmptyInput();
+      showError("Please select an image", { autoHideDuration: 2000 });
     } else {
       setOnLoading(true)
       const form = document.getElementById("query_image_form");
@@ -25,7 +23,6 @@ const ImageSearch = () => {
       const userId = JSON.parse(localStorage.getItem("userinfo"))._id;
 
       formData.append("userId", userId);
-      console.log(formData);
       try {
         const response = await axios.post(
           "http://127.0.0.1:5000/image_search",
@@ -36,8 +33,9 @@ const ImageSearch = () => {
             },
           }
         );
+        console.log("reposne from python server:", response.data.unique_identifiers)
         updateQueryImageFilterValue({
-          name: "query_image",
+          name: "queryImage",
           value: response.data.unique_identifiers,
         });
       } catch (error) {

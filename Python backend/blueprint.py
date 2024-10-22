@@ -29,4 +29,4 @@ def delete_image():
         return jsonify({'message': 'Missing deleted_product_key'}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, use_reloader=False)

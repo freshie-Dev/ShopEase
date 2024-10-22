@@ -137,7 +137,10 @@ const Customizer = () => {
         setActiveEditorTab("");
       })
   }
-
+  const handleSetTexture = ()=> {
+    setCustomizedImage(downloadCanvasToImage())
+    navigate(`/buyer/singleproduct/${productId}`)
+  }
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -188,7 +191,7 @@ const Customizer = () => {
               />
               
             ))}
-            <button className='download-btn' onClick={()=> {setCustomizedImage(downloadCanvasToImage())}}>
+            <button className='download-btn' onClick={()=> {handleSetTexture()}}>
               <img
                 src={download}
                 alt='download_image'

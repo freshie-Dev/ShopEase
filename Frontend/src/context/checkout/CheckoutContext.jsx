@@ -24,7 +24,7 @@ const initialState = {
 const CheckoutProvider = ({ children }) => {
   const baseUrl = import.meta.env.VITE_REACT_APP_API_BASE_URL;
 
-  const {cartState} = useCartContext();
+  const { cartState } = useCartContext();
 
   const [checkoutState, dispatch] = useReducer(filterReducer, initialState);
 
@@ -51,7 +51,7 @@ const CheckoutProvider = ({ children }) => {
     dispatch({ type: "SET_ADD_ADDRESS", payload: add });
   };
 
-  const cashCheckout = async ()=> {
+  const cashCheckout = async () => {
     const cartItems = cartState.cart.length > 0 ? cartState.cart : localStorageCartData();
     const addressId = address[selectedAddress]._id
     const order = {
@@ -69,10 +69,10 @@ const CheckoutProvider = ({ children }) => {
     try {
       const response = await axios.post(`${baseUrl}auth/add_order_by_cash`, order, config)
       console.log(response.data)
-      return {message: response.data.message, result: response.data.result}
+      return { message: response.data.message, result: response.data.result }
 
     } catch (error) {
-      return {message: "Order Failed!, please try again.", result: false}
+      return { message: "Order Failed!, please try again.", result: false }
     }
   }
 
@@ -82,9 +82,15 @@ const CheckoutProvider = ({ children }) => {
       const items =
         cartState.cart.length > 0 ? cartState.cart : localStorageCartData();
       const products = items.map((item) => ({
-        id: item._id,
+        _id: item._id,
+        // title: item.title,
+        // sellerId: item.userId,
         quantity: item.quantity,
+        color: item.color,
+        size: item.size,
+        // imageUrl: item.image,
       }));
+      console.log(products)
 
       const response = await axios.post(
         "http://localhost:3002/payment/",
@@ -99,10 +105,10 @@ const CheckoutProvider = ({ children }) => {
 
       const data = response.data;
       console.log(data);
-      return { message: "Order placed successfully!", success: true, paymentUrl: data.url}
+      return { message: "Order placed successfully!", success: true, paymentUrl: data.url }
     } catch (error) {
       console.log("Error while Checking out", error.message);
-      return { message: "Ordre placed successfully!", success: true}
+      return { message: "Ordre failed!", success: false }
     }
   };
 

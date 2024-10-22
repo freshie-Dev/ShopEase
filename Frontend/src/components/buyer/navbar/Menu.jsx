@@ -2,12 +2,14 @@ import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import useCartContext from "../../../context/cart-context/CartContextProvider";
 import { useUserContext } from "../../../context/user-context/UserContextProvider";
+import { useIVContext } from "@/context/image-verification/ImageVerificationContextProvider";
 
 const Menu = ({ mobileNav, userInfo }) => {
   const navigate = useNavigate()
 
   const {logOut} = useUserContext();
   const {cartState} = useCartContext();
+  const {setDuplicateProducts} = useIVContext()
 
   const cartLength = cartState.totalItems;
   const accountDetailsPath = userInfo && userInfo.usertype === "seller" ? "/seller/account-details" : "/buyer/account-details" 
@@ -39,7 +41,7 @@ const Menu = ({ mobileNav, userInfo }) => {
         </p>
         <p className="px-6 my-2 text-lg cursor-pointer" onClick={()=> navigate(accountDetailsPath)}>Account Details</p>
         <p className="px-6 my-2 text-lg cursor-pointer" onClick={()=> navigate('/buyer/orders')}>Your Orders</p>
-        <Link className="px-6 my-2 text-lg cursor-pointer" to="/" onClick={()=> {logOut()}}>Sign Out</Link>
+        <Link className="px-6 my-2 text-lg cursor-pointer" to="/" onClick={()=> {setDuplicateProducts([]); logOut(); }}>Sign Out</Link>
 
         <h1 className="p-2 my-2 text-2xl font-bold bg-[#916E4B]">Goto</h1>
 

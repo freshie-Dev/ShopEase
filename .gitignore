@@ -58,7 +58,6 @@ celerybeat-schedule
 .env
 .env/*
 .env*
-api_keys.txt
 # virtualenv
 venv/
 ENV/

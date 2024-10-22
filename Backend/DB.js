@@ -146,40 +146,13 @@ const userSchema = new Schema({
 
     }],
     orders: [{
-        items: [{
-            productId: {
-                type: Schema.Types.ObjectId,
-                ref: 'Product',
-            },
-            userId: {
-                type: Schema.Types.ObjectId,
-                ref: 'User'
-            },
-            quantity: {
-                type: Number,
-            },
-            color: {
-                type: String,
-            },
-            imageUrl: {
-                type: String,
-            },
-            name: {
-                type: String,
-            },
-            price: {
-                type: Number,
-            }
-        }],
-        orderDate: {
-            type: Date,
-            default: Date.now
-        },
-        selectedAddress: {
-            type: Schema.Types.ObjectId,
-            ref: 'address'
+        orderId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order', // Reference to the Order schema
+            required: true
         }
     }],
+
     otp: {
         code: {
             type: Number,
@@ -195,56 +168,56 @@ const userSchema = new Schema({
 //! Creating a schema for orders:
 const orderSchema = new mongoose.Schema({
     sellerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     customerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     items: [
-      {
-        productId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product',
-          required: true
-        },
-        quantity: {
-          type: Number,
-          required: true
-        },
-        color: {
-          type: String
-        },
-        imageUrl: {
-          type: String
-        },
-        name: {
-          type: String
-        },
-        price: {
-          type: Number,
-          required: true
+        {
+            productId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            color: {
+                type: String
+            },
+            imageUrl: {
+                type: String
+            },
+            name: {
+                type: String
+            },
+            price: {
+                type: Number,
+                required: true
+            }
         }
-      }
     ],
     orderDate: {
-      type: Date,
-      default: Date.now
+        type: Date,
+        default: Date.now
     },
     selectedAddress: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Address',
-      required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address',
+        required: true
     },
     status: {
-      type: String,
-      enum: ['pending', 'hipped', 'delivered', 'cancelled'],
-      default: 'pending'
+        type: String,
+        enum: ['pending', 'hipped', 'delivered', 'cancelled'],
+        default: 'pending'
     }
-  });
+});
 
 
 

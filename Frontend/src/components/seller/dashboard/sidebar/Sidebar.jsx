@@ -12,10 +12,12 @@ import { IoPowerSharp } from "react-icons/io5";
 import { useSellerNavigationContext } from "../../../../context/seller-navigation/SellerNavigationContext";
 import { Link, useLocation } from "react-router-dom";
 import { useUserContext } from "@/context/user-context/UserContextProvider";
+import { useIVContext } from "@/context/image-verification/ImageVerificationContextProvider";
 
 const Sidebar = () => {
   const { goto } = useSellerNavigationContext();
   const {logOut} = useUserContext();
+  const {setDuplicateProducts} = useIVContext()
   const location = useLocation();
 
   return (
@@ -74,8 +76,8 @@ const Sidebar = () => {
           <IoPowerSharp size={24} className="text-red-500"/>
           <Link
             className={`text-[1.2rem] hover:text-red-500 duration-300 ${location.pathname === '/seller/dashboard/customers' ? 'active' : ''}`}
-            to={'/'} 
-            onClick={logOut}
+            to={'/'}
+            onClick={()=> {setDuplicateProducts([]); logOut();}}
           >
             Log Out
           </Link>

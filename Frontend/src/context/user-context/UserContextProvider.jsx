@@ -4,6 +4,7 @@ import axios from "axios";
 
 import reducer from "../../reducers/UserReducer";
 import { useNavigate } from "react-router-dom";
+import { useProductFormContext } from "../product-form/ProductFormProvider";
 
 const initialState = {
   // loggedInUserInfo: {
@@ -20,6 +21,7 @@ const initialState = {
 
 const UserProvider = ({ children }) => {
   const baseUrl = import.meta.env.VITE_REACT_APP_API_BASE_URL;
+  // const {setProcessedImageUrl} = useProductFormContext()
 
   const navigate = useNavigate();
 
@@ -104,6 +106,7 @@ const UserProvider = ({ children }) => {
   //! 3: Log Out User
   const logOut = () => {
     localStorage.clear();
+    // setProcessedImageUrl(null)
     dispatch({type: "CLEAR_USER_STATE"})
 
   };
@@ -187,35 +190,6 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  //! 7: Add Order
-  const addOrder = async () => {
-    try {
-      const order = JSON.parse(localStorage.getItem("cart"));
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          token,
-        },
-      };
-      if (order.length === 0) {
-        return { message: "Cart is empty", result: false };
-      } else {
-        localStorage.setItem("cart", []);
-      }
-
-      const response = await axios.post(
-        `${baseUrl}auth/add_order_by_card`,
-        order,
-        config
-      );
-      const data = response.data;
-      console.log(data)
-      localStorage.setItem('cart', []);
-      return { message: data.message, result: true };
-    } catch (error) {
-      return { message: "Error while Updating Orders", result: false };
-    }
-  };
 
   
 
@@ -230,7 +204,6 @@ const UserProvider = ({ children }) => {
         verifyOTP,
         getAddress,
         address,
-        addOrder,
         userState,
         ...userState,
       }}

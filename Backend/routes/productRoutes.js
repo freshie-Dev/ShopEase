@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs')
 
 // Configure multer to handle FormData with disk storage
 const storage = multer.diskStorage({
@@ -39,9 +40,9 @@ router.post('/postproduct', upload.single('original_product_image'), verifyToken
             return res.status(201).json({ success: true, message: "Product added successfully", savedProduct });
         } else {
             // Ensure that the file is uploaded
-            if (!req.file) {
-                return res.status(400).json({ success: false, message: 'No file uploaded' });
-            }
+            // if (!req.file) {
+            //     return res.status(400).json({ success: false, message: 'No file uploaded' });
+            // }
 
             // Validate incoming data
             if (!title || !price || !description || !product_image || !attributes || !categories) {
@@ -64,12 +65,13 @@ router.post('/postproduct', upload.single('original_product_image'), verifyToken
                 attributes: parsedAttributes,
                 categories: parsedCategories,
                 customizable,
-                savedBackendImage: "localhost:3001/" + req.file.path, // Save the path of the uploaded file
-                savedBackendImageName: req.file.filename
+                // savedBackendImage: "localhost:3001/" + req.file.path, // Save the path of the uploaded file
+                // savedBackendImageName: req.file.filename
             });
 
             const savedProduct = await newProduct.save();
-            console.log('Product saved:', savedProduct);
+            console.log(req.file.path)
+            fs.unlink(req.file.path, (err) => {if(err) console.log(err)})
             return res.status(201).json({ success: true, message: "Product added successfully" });
         }
 
@@ -142,11 +144,11 @@ router.route('/seller_products')
 router.route('/delete_product/:productId')
  .delete(verifyToken, async (req, res) => {
     try {
+    console.log("im running")
       const productId = req.params.productId;
       const userId = req.userId; 
   
       const product = await Product.findById(productId);
-  
       if (!product) {
         return res.status(404).json({ message: 'Product not found' });
       }

@@ -117,14 +117,14 @@ router.route('/updateinfo')
                 user.otp = { code: otp, expiresAt: new Date(expirationTime * 1000) }; // Convert seconds to milliseconds
 
                 await user.save();
-                // const mailOptions = {
-                //     from: "ahmadrafaqat1122@gmail.com",
-                //     to: user.email, // this will be taken from user from req.body
-                //     subject: "SHOPEASE - OTP for password change",
-                //     html: `Your OTP is <h1>${otp}</h1>`
-                //   };
+                const mailOptions = {
+                    from: "ahmadrafaqat1122@gmail.com",
+                    to: user.email, // this will be taken from user from req.body
+                    subject: "SHOPEASE - OTP for password change",
+                    html: `Your OTP is <h1>${otp}</h1>`
+                };
 
-                // await transporter.sendMail(mailOptions);
+                await transporter.sendMail(mailOptions);
                 res.status(200).json({ message: "OTP send to your Mail", otp, otpSent: true });
 
             } else if (username) {
@@ -254,55 +254,40 @@ router.route('/delete_address/:addressId').delete(verifyToken, async (req, res) 
     }
 });
 
-//! Route to save order by cash
-// router.route('/add_order_by_cash')
-//     .post(verifyToken, async (req, res) => {
-//         try {
-//             const userId = req.userId;  // Get user ID from verified token
-//             const { addressId, cartItems } = req.body
+//! Route to fetch buyer orders
+router.get('/orders', verifyToken, async (req, res) => {
+    const userId = req.userId;
+    const customerId = userId
+    let orders = await Order.find({ customerId }).lean()
+    const user = await User.findById(customerId).lean();
 
-//             const user = await User.findById(userId);
-//             if (!user) {
-//                 return res.status(404).json({ message: 'User not found' });
-//             }
-//             console.log(cartItems)
-//             const order = {
-//                 items: cartItems.map((item) => ({
-//                     productId: item.productId,
-//                     userId: item.userId,
-//                     quantity: item.quantity,
-//                     color: item.color,
-//                     imageUrl: item.imageUrl,
-//                     name: item.title,
-//                     price: item.price,
-//                 })),
-//                 orderDate: Date.now(),
-//                 selectedAddress: addressId,
-//             };
-//             // console.log(order)
+     // Map through orders to attach the full address to each order
+     orders = orders.map(order => {
+        const address = user.address.find(addr => addr._id.toString() === order.selectedAddress.toString());
+        return {
+            ...order,
+            selectedAddress: address, // replace the ObjectId with the full address object
+        };
+    });
+    console.log(orders)
+    res.json(orders)
 
-//             user.orders.push(order);
-//             await user.save();
+});
 
-//             res.json({ message: 'Order Successful!', result: true });
-//         } catch (error) {
-//             res.status(500).json({ message: 'Order Failed!', result: false });
-//             console.log(error)
-//         }
-//     })
 //! Route to save order by cash
 router.route('/add_order_by_cash')
     .post(verifyToken, async (req, res) => {
         try {
             const userId = req.userId;  // Get user ID from verified token
             const { addressId, cartItems } = req.body
+            console.log(req.body)
 
             const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             }
-            console.log(cartItems)
-            // Group cart items by seller ID
+            
+            //^ Group cart items according to seller
             const sellerGroups = {};
             cartItems.forEach((item) => {
                 if (!sellerGroups[item.userId]) {
@@ -317,7 +302,6 @@ router.route('/add_order_by_cash')
                     price: item.price,
                 });
             });
-            console.log("seller groups: ", sellerGroups)
 
             // Create orders for each seller
             for (const sellerId in sellerGroups) {
@@ -328,19 +312,10 @@ router.route('/add_order_by_cash')
                     orderDate: Date.now(),
                     selectedAddress: addressId,
                 };
-                let int = 1;
-                console.log(int)
-                console.log(order)
                 // Save order to Orders collection 
                 const newOrder = new Order(order);
                 await newOrder.save();
 
-                //? Add order to seller's orders array
-                // const seller = await User.findById(sellerId);
-                // if (seller) {
-                //     seller.orders.push(newOrder._id);
-                //     await seller.save();
-                // }
             }
 
             res.json({ message: 'Order Successful!', result: true });
@@ -357,6 +332,7 @@ router.route('/add_order_by_card')
     .post(verifyToken, async (req, res) => {
         try {
             const order = req.body;
+
             const userId = req.userId;  // Get user ID from verified token
 
             if (order.length === 0) {
@@ -481,23 +457,23 @@ router.route('/seller_orders')
 
 
 //! Update order status
-    router.put('/update_order_status/:orderId', async (req, res) => {
-        try {
-          const orderId = req.params.orderId;
-          const statusValue = req.body.status;
-      
-          // Update the order status in the database
-          const order = await Order.findByIdAndUpdate(orderId, { status: statusValue }, { new: true });
-      
-          if (!order) {
+router.put('/update_order_status/:orderId', async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const statusValue = req.body.status;
+
+        // Update the order status in the database
+        const order = await Order.findByIdAndUpdate(orderId, { status: statusValue }, { new: true });
+
+        if (!order) {
             return res.status(404).json({ message: 'Order not found' });
-          }
-      
-          res.status(200).json({ message: 'Order status updated successfully', success: true });
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: 'Error updating order status', success: false });
         }
-      });
+
+        res.status(200).json({ message: 'Order status updated successfully', success: true });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error updating order status', success: false });
+    }
+});
 
 module.exports = router;

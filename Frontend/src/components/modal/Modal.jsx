@@ -5,6 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import selectSchema from "../register/selectSchema";
 import { useUserContext } from "../../context/user-context/UserContextProvider";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi"; // Import icons
 
 const Modal = () => {
   const { openModal, setOpenModal, changeField, setChangeField } =
@@ -12,12 +13,14 @@ const Modal = () => {
   const { UpdateField, verifyOTP } = useUserContext();
 
   const [tempPassword, setTempPassword] = useState();
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
 
   const handleClick = (e) => {
     if (e.target.classList.contains("overlay")) {
       setOpenModal(false);
     }
   };
+
   const onSubmit = async (values, action) => {
     if (!values.OTP) {
       const status = await UpdateField(values); //1
@@ -27,18 +30,17 @@ const Modal = () => {
         setOpenModal(false);
       } else if (status.changedField === "password") {
         setTempPassword(values.Password);
-         action.resetForm();
-         setChangeField("OTP");
+        action.resetForm();
+        setChangeField("OTP");
       }
     } else {
       const status = await verifyOTP({ OTP: values.OTP, tempPassword });
-      if(status === true) {
+      if (status === true) {
         action.resetForm();
         setOpenModal(false);
         alert("Password Changed");
       } else {
-        //TODO: show user that otp is wrong 
-        alert("Wrong OTP")
+        alert("Wrong OTP");
       }
     }
   };
@@ -52,7 +54,6 @@ const Modal = () => {
   const OTP = {
     OTP: "",
   };
-  // Select the appropriate initial values based on the Input
 
   const initialValues =
     changeField === "Password"
@@ -76,6 +77,9 @@ const Modal = () => {
     </div>
   );
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
   if (openModal)
     return (
@@ -90,7 +94,7 @@ const Modal = () => {
                 x
               </p>
             </div>
-            <h1 className="  text-[1.4rem] w-full text-center bg-black text-[#D9A470] my-1 rounded-md p-2">
+            <h1 className="text-[1.4rem] w-full text-center bg-black text-[#D9A470] my-1 rounded-md p-2">
               {changeField === "Password"
                 ? "Set Password"
                 : changeField === "Username"
@@ -109,32 +113,34 @@ const Modal = () => {
               <Form className="w-full">
                 {changeField === "Username" ? (
                   <Field
-                    // type={changeField === "Password" ? "password" : "text"}
                     type="text"
-                    // name={changeField}
                     name="Username"
                     placeholder={`Enter ${changeField}`}
-                    className="w-full text-center   h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
-                  ></Field>
+                    className="w-full text-center h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
+                  />
                 ) : changeField === "Password" ? (
-                  <Field
-                    // type={changeField === "Password" ? "password" : "text"}
-                    type="password"
-                    // name={changeField}
-                    name="Password"
-                    placeholder={`Enter ${changeField}`}
-                    className="w-full text-center   h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
-                  ></Field>
+                  <div className="relative">
+                    <Field
+                      type={showPassword ? "text" : "password"}
+                      name="Password"
+                      placeholder={`Enter ${changeField}`}
+                      className="w-full text-center h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
+                    />
+                    <span
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-4 top-[50%] translate-y-[-50%] cursor-pointer"
+                    >
+                      {showPassword ? <BiSolidHide /> : <BiSolidShow />}
+                    </span>
+                  </div>
                 ) : changeField === "OTP" ? (
                   <Field
-                    // type={changeField === "Password" ? "password" : "text"}
                     type="text"
-                    // name={changeField}
                     name="OTP"
                     component={CustomInputComponent}
                     placeholder={`Enter ${changeField}`}
-                    className="w-full text-center   h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
-                  ></Field>
+                    className="w-full text-center h-[40px] py-2 px-4 text-[1.2rem] focus:outline-none rounded-md"
+                  />
                 ) : null}
 
                 <div>
@@ -142,7 +148,7 @@ const Modal = () => {
                 </div>
                 <button
                   type="submit"
-                  className="text-[#000]  text-[1.4rem]   font-bold  rounded-md bg-[#eee1c8] w-full py-4 mt-1"
+                  className="text-[#000] text-[1.4rem] font-bold rounded-md bg-[#eee1c8] w-full py-4 mt-1"
                 >
                   Submit
                 </button>

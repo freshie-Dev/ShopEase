@@ -15,6 +15,8 @@ import CustomButton from "@/custom-components/HoverButton";
 import useSnackbar from "@/custom-components/notification/useSnackbar";
 import { ClipLoader } from "react-spinners";
 
+import shirtImg from "@/assets/custom.jpg"
+
 const Inventory = () => {
   const baseUrl = import.meta.env.VITE_REACT_APP_API_BASE_URL;
   const baseUrlPython = import.meta.env.PYTHON_BACKEND_API_BASE_URL;
@@ -61,9 +63,11 @@ const Inventory = () => {
       );
 
       const deleted_product_key = response.data.deletedProduct.uniqueIdentifier;
+      if(deleted_product_key) {
+        const response2 = await axios.post(`http://127.0.0.1:5000/delete_image`, { deleted_product_key });
+        console.log(response2.data)
+      } 
       
-      const response2 = await axios.post(`http://127.0.0.1:5000/delete_image`, { deleted_product_key });
-      console.log(response2.data)
 
       setDelLoading((prevDelLoading) => ({
         ...prevDelLoading,
@@ -102,6 +106,7 @@ const Inventory = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Sr #</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Product ID</TableHead>
               <TableHead>Colors</TableHead>
@@ -113,6 +118,7 @@ const Inventory = () => {
               return (
                 <TableRow key={item._id}>
                   <TableCell>{index + 1}</TableCell>
+                  <TableCell><img src={item.imageUrl || shirtImg} className="w-[40px] rounded-lg" alt="" /></TableCell>
                   <TableCell>{item.title}</TableCell>
                   <TableCell>{item._id}</TableCell>
                   <TableCell>

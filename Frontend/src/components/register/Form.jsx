@@ -95,7 +95,7 @@ const Register = () => {
           >
             <Form className="flex flex-col justify-center items-center">
               <FormInput type="text" name="Username" />
-
+              
               <FormInput type="password" name="Password" />
               {formType && (
                 <>

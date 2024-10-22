@@ -10,43 +10,61 @@ const IVProvider = ({ children }) => {
   const [duplicateProducts, setDuplicateProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const checkUserIdInFilenames = (filenames) => {
+    if (filenames.length === 0) {
+      return { isSame: false, userId: null };
+    }
+  
+    const extractUserId = (filename) => {
+      return filename.split('_')[0];
+    };
+  
+    const firstUserId = extractUserId(filenames[0]);
+    const isSame = filenames.every((filename) => extractUserId(filename) === firstUserId);
+  
+    return { isSame, userId: isSame ? firstUserId : null };
+  };
+
   const verifyImages = async () => {
     try {
       const userId = JSON.parse(localStorage.getItem("userinfo"))._id;
       setLoading(true)
-      // const response = await axios.get(`http://127.0.0.1:5000/verify_images`);
       const response = await axios.get(`http://127.0.0.1:5000/verify_images`, {
         params: {
           userId: userId,
         },
       });
       let duplicateImages = response.data.duplicates;
-      console.log(duplicateImages)
 
       duplicateImages = duplicateImages.map((imageName) => {
         return imageName.path;
       });
       console.log(duplicateImages)
-   
-      const productsResponse = await axios.post(
-        `http://localhost:3002/products/productsByUniqueIdentifiers`,
-        { uniqueIdentifiers: duplicateImages }
-      );
-      let products = productsResponse.data;
-      console.log(products)
-      products = sortProducts(
-        products,
-        JSON.parse(localStorage.getItem("userinfo"))._id
-      );
+
+      const {isSame, userId: extractedUserId} = checkUserIdInFilenames(duplicateImages)
+
+      if(!isSame || (isSame && extractedUserId === userId) ) {
+        // fetch products
+        const productsResponse = await axios.post(
+          `http://localhost:3002/products/productsByUniqueIdentifiers`,
+          { uniqueIdentifiers: duplicateImages }
+        );
+        let products = productsResponse.data;
+        products = sortProducts(
+          products,
+          JSON.parse(localStorage.getItem("userinfo"))._id
+        );
+        setDuplicateProducts(products);
+      }  else {
+        setDuplicateProducts([])
+      }
       setLoading(false)
-      setDuplicateProducts(products);
-      console.log("Products:", products);
     } catch (error) {
       console.log(error);
     }
   };
 
-  
+
 
   return (
     <ImageVerificationContext.Provider

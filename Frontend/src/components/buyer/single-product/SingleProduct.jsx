@@ -225,9 +225,6 @@ const SingleProduct = () => {
               -
             </button>
           </div>
-
-          <p className="text-black">{customizable}</p>
-          <p className="text-black">{customSize}</p>
           <CustomButton
             onClick={() => {
               addToCart(

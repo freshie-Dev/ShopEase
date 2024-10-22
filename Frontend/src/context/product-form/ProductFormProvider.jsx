@@ -268,7 +268,7 @@ const ProductFormProvider = ({ children }) => {
         handleColorInputChange,
         handleSizeInputChange,
         handleFormSubmit,
-        processedImageUrl,
+        processedImageUrl, setProcessedImageUrl,
         customizable,
         setCustomizable,
         isRemoveBgChecked,

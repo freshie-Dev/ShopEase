@@ -54,11 +54,12 @@ const FilterProvider = ({ children }) => {
 
   const updateQueryImageFilterValue = (queryImage) => {
     let { name, value } = queryImage;
-    
-
     return dispatch({ type: "UPDATE_QUERY_IMAGE_FILTERS_VALUE", payload: { name, value } });
   };
-
+  useEffect(() => {
+    console.log(filterState.filters.queryImage)
+  }, [filterState.filters.queryImage])
+  
   //! search by image
   const searchByImage = (e) => {
     const searchImageFile = e.target.files[0]; // Get the first file from the FileList
@@ -98,17 +99,11 @@ const FilterProvider = ({ children }) => {
 
   // //! load filtered products when the filters change or sorted products when the sorting value changes
   useEffect(() => {
+    console.log("hahahah")
     dispatch({ type: "FILTER_PRODUCTS" });
+    localStorage.setItem('filters', JSON.stringify(filterState.filters))
   }, [filterState.filters]);
-  
-  // useEffect(() => {
-  //     dispatch({type: "FILTER_PRODUCTS"});
-  //     dispatch({type: "GET_SORTED_PRODUCTS"});
-  // }, [products, state.filters, state.sortingValue]);
 
-  // // useEffect(() => {
-  // //     dispatch({type: "GET_SORTED_PRODUCTS"});
-  // // }, [ state.sortingValue])
 
   // //! load all products for the gird and list view for the first time
   useEffect(() => {

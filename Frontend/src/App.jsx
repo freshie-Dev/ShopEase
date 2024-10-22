@@ -17,6 +17,7 @@ import SingleProduct from "./components/buyer/single-product/SingleProduct";
 import Cart from "./components/buyer/cart/Cart";
 import Checkout from "./components/buyer/Checkout/Checkout";
 import Orders from "./components/seller/dashboard/orders/Orders";
+import BuyerOrders from "./components/buyer/orders/Orders";
 import CustomShirtEditor from "./components/buyer/shirt-editor/CustomShirtEditor";
 import Payment from "./components/buyer/payment-status/Payment";
 import Home from "./components/seller/dashboard/home/Home";
@@ -43,7 +44,7 @@ function App() {
         />
         <Route path="/buyer/cart" element={<Cart />} />
         <Route path="/buyer/checkout" element={<Checkout />} />
-        <Route path="/buyer/orders" element={<Orders />} />
+        <Route path="/buyer/orders" element={<BuyerOrders />} />
         <Route
           path="/buyer/singleproduct/customize/:product-id"
           element={<CustomShirtEditor />}

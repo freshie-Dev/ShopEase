@@ -9,7 +9,7 @@ import useCheckoutContext from "@/context/checkout/CheckoutContext";
 import CustomButton from "@/custom-components/HoverButton";
 import useSnackbar from "@/custom-components/notification/useSnackbar";
 import { useNavigate } from "react-router-dom";
-import { ClockLoader } from "react-spinners";
+import { BounceLoader, ClockLoader, GridLoader } from "react-spinners";
 
 const Checkout = () => {
   const navigate = useNavigate()
@@ -17,7 +17,7 @@ const Checkout = () => {
 
   const [onLoading, setOnLoading] = useState(false);
 
-  const {emptyCart} = useCartContext();
+  const { emptyCart } = useCartContext();
 
   const {
     getAddress,
@@ -51,10 +51,8 @@ const Checkout = () => {
       setOnLoading(true)
       const status = await cardCheckout();
       if (status.success) {
-        showSuccess(status.message, { autoHideDuration: 2000})
-        setOnLoading(false)
         window.location.href = status.paymentUrl;
-        
+
       } else {
         showError(status.message, { autoHideDuration: 2000 });
         setOnLoading(false)
@@ -66,9 +64,14 @@ const Checkout = () => {
     getAddress();
     console.log(address);
   }, []);
-
+  if (!address) return <div className="flex flex-col justify-center items-center mt-[100px] min-h-[60vh] py-[20px] bg-[#FFE9D4]">
+    <GridLoader
+      color="#000000"
+      size={15}
+    />
+  </div>
   return (
-    <DIV className=" flex flex-col justify-center items-center mt-[100px] py-[20px] bg-[#FFE9D4]">
+    <DIV className=" flex flex-col justify-center items-center mt-[100px] min-h-[60vh] py-[20px] bg-[#FFE9D4]">
       <h1 className="text-2xl font-bold text-[#916E4B] mb-4">
         Select your Payment Mode
       </h1>
@@ -108,7 +111,7 @@ const Checkout = () => {
         type="submit"
         className="w-[80%] sm:w-[70%] md:w-[50%] my-6 flex justify-center"
       >
-        {paymentType === "cash" && onLoading ? <ClockLoader size={25}/> : paymentType === "cash" && !onLoading ? "Checkout" : paymentType === "card" && onLoading ? <ClockLoader size={25}/>: "proceed"}
+        {paymentType === "cash" && onLoading ? <ClockLoader size={25} /> : paymentType === "cash" && !onLoading ? "Checkout" : paymentType === "card" && onLoading ? <ClockLoader size={25} /> : "proceed"}
       </CustomButton>
     </DIV>
   );

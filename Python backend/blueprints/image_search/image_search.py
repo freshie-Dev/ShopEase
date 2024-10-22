@@ -16,7 +16,7 @@ def create_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-create_dir("blueprints/image_search/query_images")
+create_dir("blueprints/image_search/temp_query_image")
 
 @image_search_bp.route('/image_search',  methods=['POST'])
 def image_serach():
@@ -32,7 +32,7 @@ def image_serach():
 
         # image_filename = user id + unique identifier + date & time
         image_filename = f"{userId}_{random_number}_{current_date}.png"
-        image_path = os.path.join("blueprints/image_search/query_images", image_filename)
+        image_path = os.path.join("blueprints/image_search/temp_query_image", image_filename)
         query_image.save(image_path)
         
         
@@ -41,16 +41,13 @@ def image_serach():
 
     filename = pickle.load(open(filenames_path, "rb"))
     feature_list = np.array(pickle.load(open(features_path, "rb")))
-    
-    print(filename)
-    print(feature_list)
+ 
     
     neighbors = NearestNeighbors(n_neighbors=len(filename), algorithm='brute', metric='euclidean')
     neighbors.fit(feature_list)
         
     distance, indices = neighbors.kneighbors([extract_features(img_path= image_path, model=model)])
     
-    print(indices)
     
     unique_identifiers = []
     for file in indices[0][0: len(filename)]:
@@ -58,6 +55,11 @@ def image_serach():
         unique_identifiers.append(os.path.basename(filename[file]))
     
     print(f"unique identifiers {unique_identifiers}")
+    
+    # Delete the query image after processing
+    print(f'image_path is {image_path}')
+    if os.path.exists(image_path):
+        os.remove(image_path)
     
     
     return jsonify({"message": "results found successfully", "unique_identifiers": unique_identifiers }), 200

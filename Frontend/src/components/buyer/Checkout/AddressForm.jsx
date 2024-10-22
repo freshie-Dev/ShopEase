@@ -109,7 +109,7 @@ const AddressForm = () => {
               className="input"
             />
 
-            <div className="flex gap-2 items-center justify-center my-4">
+            {/* <div className="flex gap-2 items-center justify-center my-4">
               <label className=" " htmlFor="same-address">
                 <Field
                   className="h-[20px] mr-2 "
@@ -121,7 +121,7 @@ const AddressForm = () => {
               </label>
 
               <p className="">Shipping & Billing address same?</p>
-            </div>
+            </div> */}
 
             <CustomButton
               type="submit"

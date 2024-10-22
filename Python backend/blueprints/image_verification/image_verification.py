@@ -1,9 +1,6 @@
 from flask import Blueprint, jsonify, request
-import sys
 import os
-import argparse
 import cv2 as cv
-import tqdm  # type: ignore
 
 
 image_verification_bp = Blueprint('/verify_image', __name__)
@@ -54,29 +51,30 @@ def similarity_check(imgs, userId):
     duplicates = []
     for i1 in range(len(imgs)):
         
-        print("-----------------------------------------------------------")
-        print(os.path.basename(imgs[i1]['p']).startswith(userId))
-        print(os.path.basename(imgs[i1]['p']))
+        # print("-----------------------------------------------------------")
+        # print(os.path.basename(imgs[i1]['p']).startswith(userId))
+        # print(os.path.basename(imgs[i1]['p']))
         # if os.path.basename(imgs[i1]['p']).startswith(userId) == True:
         for i2 in range(i1 + 1, len(imgs)):
         # for i2 in range(i1, len(imgs)):
-            print('inner loop running')
+            # print('inner loop running')
             
             matches = find_matches( imgs, i1, i2)
+            print(f"matches: {matches}")
             matchesCount = 0
             for i, (m, n) in enumerate(matches):
                 if m.distance < DEFAULT_FEATURES_DISTANCE * n.distance:
                     matchesCount += 1
-            print(matchesCount)
+            # print(matchesCount)
             if matchesCount > DEFAULT_MIN_MATCHES:
                 # h1, w1 = imgs[i1]['f'].shape[:2]
                 # h2, w2 = imgs[i2]['f'].shape[:2]
                 # duplicates.append(imgs[i2 if h1 * w1 > h2 * w2 else i1]['p'])
                 duplicates.append(imgs[i1]['p'])
                 duplicates.append(imgs[i2]['p'])
-                print("appending duplicate")
+                # print("appending duplicate")
     
-        print("-----------------------------------------------------------")
+        # print("-----------------------------------------------------------")
     return duplicates
     
 
@@ -94,9 +92,11 @@ def index():
         duplicates = similarity_check(features, userId=user_id)
         # print(f'{duplicates}')
         
-        # for idx, path in enumerate(list(set(duplicates)), 1):
-            # print(f"{idx}. {path}")
-        
+        print("-----------------------------------------------------------")
+        for idx, path in enumerate(list(set(duplicates)), 1):
+            print(f"{idx}. {path}")
+        print("-----------------------------------------------------------")
+
         duplicates = list(set(duplicates))
         
         duplicates_data = [{'index': idx, 'path': os.path.basename(path)} for idx, path in enumerate(duplicates, 1)]

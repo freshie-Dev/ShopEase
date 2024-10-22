@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import CustomButton from '../../../custom-components/HoverButton';
 import { useUserContext } from '../../../context/user-context/UserContextProvider';
@@ -7,33 +7,27 @@ import useSnackbar from '@/custom-components/notification/useSnackbar';
 import useCartContext from '@/context/cart-context/CartContextProvider';
 
 const PaymentSuccess = () => {
-  const {emptyCart} = useCartContext()
-  const {showSuccess, showError} = useSnackbar()
-  const { addOrder } = useUserContext();
+  const { emptyCart } = useCartContext()
+  const { showSuccess, showError } = useSnackbar()
   const navigate = useNavigate();
   const query = useParams();
   const paymentStatus = query.paymentStatus;
-  console.log(paymentStatus);
-
-  const handleOrder = async () => {
-    const status = await addOrder();
-    if (status.result) {
-      emptyCart();
-      localStorage.setItem('cart', new Array())
-      showSuccess(status.message, { autoHideDuration: 2000 });
-    } else {
-      showError(status.message, { autoHideDuration: 2000 });
-    }
-  };
+  const hasDisplayedSnackbar = useRef(false); // Ref to act as a flag
 
   useEffect(() => {
-    if (paymentStatus === 'paid') {
-      handleOrder();
-    } else if (paymentStatus === 'un_paid') {
-      enqueueSnackbar('Order Failed', { variant: 'error', autoHideDuration: 2000   });
+    if (!hasDisplayedSnackbar.current) {
+      if (paymentStatus === 'paid') {
+        emptyCart();
+        enqueueSnackbar('Order Successful!', { variant: 'success', autoHideDuration: 2000 });
+      } else if (paymentStatus === 'un_paid') {
+        enqueueSnackbar('Order Failed', { variant: 'error', autoHideDuration: 2000 });
+      }
+      hasDisplayedSnackbar.current = true; // Set the flag to true after displaying the snackbar
     }
-  }, [paymentStatus]); // Add paymentStatus as a dependency
+  }, [paymentStatus, emptyCart]);// Add paymentStatus as a dependency
 
+  
+  
   return (
     <div className='mt-[100px] h-[60vh] flex flex-col justify-center bg-[#F0D8C0] items-center'>
       {paymentStatus === 'paid' ? (

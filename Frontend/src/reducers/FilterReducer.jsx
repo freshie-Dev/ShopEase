@@ -1,8 +1,8 @@
 const reducer = (state, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case "LOAD_FILTER_PRODUCTS":
 
-        const maxPrice = Math.max(...action.payload.map((item) => item.price));
+            const maxPrice = Math.max(...action.payload.map((item) => item.price));
             return {
                 ...state,
                 filteredProducts: [...action.payload],
@@ -16,7 +16,7 @@ const reducer = (state, action) => {
         case "SET_GRID_VIEW":
             return {
                 ...state,
-                gridView:  true,
+                gridView: true,
             }
         case "SET_LIST_VIEW":
             return {
@@ -34,23 +34,23 @@ const reducer = (state, action) => {
         //     const {sortingValue, filteredProducts} = state;
         //     let tempSortedProducts = [...filteredProducts];
         //     if(sortingValue === "lowest"){
-                
+
         //     }
         //     if(sortingValue === "highest"){
         //         tempSortedProducts = tempSortedProducts.sort((a,b) => b.price - a.price)
-                
+
         //     }
         //     if(sortingValue === "ascending"){
         //         tempSortedProducts = tempSortedProducts.sort((a,b) => a.name.localeCompare(b.name))
-                
+
         //     }
         //     if(sortingValue === "descending"){
         //         tempSortedProducts = tempSortedProducts.sort((a,b) => b.name.localeCompare(a.name))
-                
+
         //     }
         //     if (sortingValue === "all"){
         //         tempSortedProducts = [...state.allProducts];
-                
+
         //     }
 
         // return {
@@ -58,7 +58,7 @@ const reducer = (state, action) => {
         //     filteredProducts: [...tempSortedProducts],
         // }
         case "UPDATE_FILTERS_VALUE":
-            const {name, value} = action.payload;
+            const { name, value } = action.payload;
             return {
                 ...state,
                 filters: {
@@ -68,7 +68,7 @@ const reducer = (state, action) => {
             }
 
         case "UPDATE_QUERY_IMAGE_FILTERS_VALUE":
-            console.log(action.payload)
+            console.log("from filter reducer", action.payload)
             return {
                 ...state,
                 filters: {
@@ -77,10 +77,10 @@ const reducer = (state, action) => {
                 }
             }
         case "FILTER_PRODUCTS":
-            let {allProducts} = state;
+            let { allProducts } = state;
             let tempFilteredProducts = [...allProducts];
 
-            const {text, category, colors, brand, price, query_image} = state.filters;
+            const { text, category, colors, brand, price, queryImage } = state.filters;
             let check = "nothing"
             if (text) {
                 tempFilteredProducts = tempFilteredProducts.filter((curEle) => {
@@ -114,31 +114,44 @@ const reducer = (state, action) => {
                     return curEle.price <= price;
                 });
             }
-            if (query_image) {
-                const identifierIndexMap = new Map(query_image.map((id, index) => [id, index]));
-              
-                // Sort tempFilteredProducts based on the order of query_image array
-                const sortedTempProducts = tempFilteredProducts.sort((a, b) => {
-                  const indexA = identifierIndexMap.get(a.uniqueIdentifier);
-                  const indexB = identifierIndexMap.get(b.uniqueIdentifier);
-                  return indexA - indexB;
+            if (queryImage) {
+                const identifierIndexMap = new Map(queryImage.map((id, index) => [id, index]));
+
+                // Extract uniqueIdentifiers from tempFilteredProducts
+                let uid = tempFilteredProducts.map(prod => prod.uniqueIdentifier);
+
+                console.log(uid);
+
+                // Separate undefined items from defined items
+                const definedItems = tempFilteredProducts.filter(prod => prod.uniqueIdentifier !== undefined);
+                const undefinedItems = tempFilteredProducts.filter(prod => prod.uniqueIdentifier === undefined);
+
+                // Sort defined items based on the order of queryImage array
+                const sortedDefinedItems = definedItems.sort((a, b) => {
+                    const indexA = identifierIndexMap.get(a.uniqueIdentifier);
+                    const indexB = identifierIndexMap.get(b.uniqueIdentifier);
+                    return indexA - indexB;
                 });
-                tempFilteredProducts = sortedTempProducts
-              }
+
+                // Concatenate sorted defined items with undefined items
+                const sortedTempProducts = [...sortedDefinedItems, ...undefinedItems];
+
+                tempFilteredProducts = sortedTempProducts;
+            }
             return {
                 ...state,
                 filteredProducts: tempFilteredProducts
             }
-            case "SEARCH_BY_IMAGE":
-                const image = action.payload
-                console.log(image)
-                return {
-                    ...state,
-                    searchImage: image
-                }
+        case "SEARCH_BY_IMAGE":
+            const image = action.payload
+            console.log(image)
+            return {
+                ...state,
+                searchImage: image
+            }
             break;
-            case "CLEAR_FILTERS":
-                return {
+        case "CLEAR_FILTERS":
+            return {
                 ...state,
                 filters: {
                     ...state.filters,
@@ -149,19 +162,19 @@ const reducer = (state, action) => {
                     price: 0,
                     maxPrice: 0,
                     minPrice: 0,
-                    query_image: null
+                    queryImage: null
                 }
             }
             break;
-            // case "RESET_COLORS":
-            //     return {
-            //         ...state,
-            //         filters: {
-            //             ...state.filters,
-            //             colors: "all"
-            //         }
-            //     }
-            // break;
+        // case "RESET_COLORS":
+        //     return {
+        //         ...state,
+        //         filters: {
+        //             ...state.filters,
+        //             colors: "all"
+        //         }
+        //     }
+        // break;
         default:
             return state;
     }

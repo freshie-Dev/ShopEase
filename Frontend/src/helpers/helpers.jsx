@@ -64,4 +64,23 @@ const formatDate = (dateString) => {
     <h1>{time}</h1>
   </div>
 };
-export { getComplementaryColor, sortProducts, maxStock, formatDate };
+const formatDate2 = (dateString) => {
+  const dateTime = new Date(dateString);
+  const date = dateTime.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const time = dateTime.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true, // Use 12-hour format (AM/PM)
+  });
+
+  return <span className="flex items-start gap-2">
+    <h1>{date}</h1>
+    <h1>{time}</h1>
+  </span>
+};
+export { getComplementaryColor, sortProducts, maxStock, formatDate, formatDate2 };

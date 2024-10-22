@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useProductFormContext } from "../../../../context/product-form/ProductFormProvider";
 const ProcessedImage = () => {
-  const { processedImageUrl } = useProductFormContext();
+  const { processedImageUrl, setProcessedImageUrl } = useProductFormContext();
 
+  useEffect(() => {
+    return () => {
+      setProcessedImageUrl(null)
+    }
+  }, [])
+  
   return (
     <div className="rounded-xl overflow-hidden my-3">
       <table className="w-full">

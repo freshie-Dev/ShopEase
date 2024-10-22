@@ -1,0 +1,15 @@
+	Frontend/.env:
+		- VITE_REACT_APP_API_BASE_URL=http://localhost:3002/
+		- PYTHON_BACKEND_API_BASE_URL=http://127.0.0.1:5000/
+	Backend/.env: 
+		- OPEN_AI_API_KEY
+		- PORT=3002
+	Python Backend/.env:
+		- REMOVE_BG_API_KEY
+
+
+
+
+			1- REMOVE_BG_API_KEY=bF1UEzbsGwbx78SQgRUDcDMo ahmadrafaqat1122@gmail.com
+			2- REMOVE_BG_API_KEY=SW96zQXSL1uKmBNZwhPfetSp ahmadali0775@gmail.com
+(current)	3- REMOVE_BG_API_KEY=j6WqLAUAQyHnWHwLVZZowMq1 ahmadrats@gmail.com 

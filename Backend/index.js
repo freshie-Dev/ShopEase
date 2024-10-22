@@ -4,16 +4,17 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors());
 
+//! 4: User Route 
+app.use('/payment', require('./routes/paymentRoutes.js'));
+
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 app.get('/', (req,res) => {
   res.send("Hello World!")
 })
-
-//? We have 2 routes
 
 //! 1: Product Route 
 app.use('/products', require('./routes/productRoutes.js'));
@@ -24,8 +25,6 @@ app.use('/auth', require('./routes/userRoutes.js'));
 //! 3: User Route 
 app.use('/api/v1/dalle', require('./routes/imageGeneration.js'));
 
-//! 4: User Route 
-app.use('/payment', require('./routes/paymentRoutes.js'));
 
 //! 5: Image route
 // Serve static files from the 'upload/images' directory

@@ -3,11 +3,14 @@ import settingsIcon from "../../../assets/settings-icon.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUserContext } from "../../../context/user-context/UserContextProvider";
 import { MdSettings } from "react-icons/md";
+import { useIVContext } from "@/context/image-verification/ImageVerificationContextProvider";
 
 const Settings = ({ userInfo }) => {
     const navigate = useNavigate();
     const {logOut} = useUserContext();
+    const {setDuplicateProducts} = useIVContext()
 
+    console.log(userInfo)
     const [settings, setSettings] =useState(false)
     const handleClick = () => setSettings(!settings)
 
@@ -26,8 +29,8 @@ const Settings = ({ userInfo }) => {
       <div className={`${settings ? "absolute" : "hidden"} bottom-[-140px] right-0 bg-black rounded-md min-w-[162px]`}>
         
         <p className="px-6 my-2 text-lg min-w-max"><NavLink to={accountDetailsPath} >Account Details</NavLink></p>
-        {userInfo.type === "buyer" && <p className="px-6 my-2 text-lg min-w-max"><NavLink to='/buyer/orders'>Orders</NavLink></p>}
-        <p className="px-6 my-2 text-lg min-w-max"><NavLink to="/" onClick={()=> {logOut()}}>Sign Out</NavLink></p>
+        {userInfo.usertype === "buyer" && <p className="px-6 my-2 text-lg min-w-max"><NavLink to='/buyer/orders'>Orders</NavLink></p>}
+        <p className="px-6 my-2 text-lg min-w-max"><NavLink to="/" onClick={()=> {setDuplicateProducts([]); logOut(); }}>Sign Out</NavLink></p>
 
       </div>
 
