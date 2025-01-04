@@ -78,6 +78,7 @@ def convert_to_png(image_path, converted_image_path):
 @bg_removal_bp.route('/process_image', methods=['POST'])
 def process_image():
     try:
+        print(1)
         # Save the received image to the test_images/image directory
         image_file = request.files['productImage']
         user_id = request.form.get('userId')
@@ -91,6 +92,7 @@ def process_image():
         masked_image_path = os.path.join("blueprints/bg_removal/processed-images", image_filename)
         cat_image_path = os.path.join("blueprints/bg_removal/processed-cat-images", image_filename)
         
+        print(2)
         image_file.save(original_image_path)
         
         original_image_path = convert_to_png(original_image_path, original_image_path)
@@ -100,18 +102,20 @@ def process_image():
             raise Exception("Original image not loaded correctly.")
 
         if remove_bg == "false":
+            print(3)
             cv2.imwrite(masked_image_path, original_image)
             response_data = {
                 'image_url': f"http://127.0.0.1:5000/processed-images/{image_filename}",
                 'image_filename': image_filename,  # Added image filename
             }
             upload_image(image_path=original_image_path)
-            if os.path.exists(original_image_path):
-                os.remove(original_image_path)
             return response_data, 200
 
+        print(4)
         # Generate masked image
         masked_image_path = remove_bg_api(original_image_path, masked_image_path)
+        print(f"masked image path: {masked_image_path}")
+        print(6)
         if masked_image_path is None:
             raise Exception("Failed to process the image with the background removal API.")
 
@@ -124,18 +128,35 @@ def process_image():
             
         original_image = cv2.cvtColor(original_image, cv2.COLOR_RGB2RGBA)
         
+        # Concatenate original and masked images
+        print('original Image Height is: ',original_image.shape[0])
+        print('original Image Width is: ',original_image.shape[1])
+        print('original Image shape is: ',original_image.shape)
+        print('original Image data type is: ',original_image.dtype)
+        print('masked Image height is: ',masked_image.shape[0])
+        print('masked Image Width is: ',masked_image.shape[1])
+        print('masked Image shape is: ',masked_image.shape)
+        print('masked Image data type is: ',masked_image.dtype)
+        print("original image dimension: ", original_image.shape[:2])
+        print("masked image dimension: ", masked_image.shape[:2])
+        
         # Ensure the masked image has the same size as the original image
         if original_image.shape[:2] != masked_image.shape[:2]:
             masked_image = cv2.resize(masked_image, (original_image.shape[1], original_image.shape[0]))
+            print("masked image dimensiton after conversion: ",masked_image.shape[:2])
             
         # cat_images = np.concatenate([original_image, masked_image], axis=1)
-        
+        print("before concat")
         cat_images = cv2.hconcat([original_image, masked_image])
+        print("after concat")
         
         # Save the masked and concatenated images
+        print("before wiritng")
         cv2.imwrite(masked_image_path, masked_image)
         cv2.imwrite(cat_image_path, cat_images)
+        print("after wiritng")
         
+        print(6)
 
         response_data = {
             'resulting_mask_url': f"http://127.0.0.1:5000/processed-images/{image_filename}",
@@ -143,12 +164,8 @@ def process_image():
             'masked_image_filename': image_filename,
         }
         
+        print("before upload image")
         upload_image(image_path=masked_image_path)
-
-         # Delete the query image after processing
-        print(original_image_path)
-        if os.path.exists(original_image_path):
-            os.remove(original_image_path)
 
         return response_data, 200
 

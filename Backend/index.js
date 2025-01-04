@@ -8,6 +8,7 @@ app.use(cors());
 
 //! 4: User Route 
 app.use('/payment', require('./routes/paymentRoutes.js'));
+// app.use('/payment', require('./routes/paymentRoutes2.js'));
 
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));

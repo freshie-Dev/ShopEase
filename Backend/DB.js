@@ -18,6 +18,12 @@ const connectToMongoDB = async () => {
 }
 connectToMongoDB();
 
+const blacklistSchema = new mongoose.Schema({
+    deletedProduct: {
+        type: String,
+        required: true,
+    }
+})
 
 //! Creating a schema for the product:
 const productSchema = new mongoose.Schema({
@@ -99,6 +105,7 @@ const productSchema = new mongoose.Schema({
 //! Creating a schema for user:
 
 const userSchema = new Schema({
+   
     username: {
         type: String,
         // required: true
@@ -227,6 +234,8 @@ const Product = mongoose.model('Product', productSchema);
 const User = mongoose.model('User', userSchema);
 //! Creating a model for the Orders:
 const Order = mongoose.model('Order', orderSchema);
+//! Creating a model for the Blacklisted Products:
+const BlackList = mongoose.model('Blacklist', blacklistSchema);
 
 
-module.exports = { Product, User, Order };
+module.exports = { Product, User, Order, BlackList };

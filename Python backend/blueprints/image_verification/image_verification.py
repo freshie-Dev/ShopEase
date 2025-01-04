@@ -60,7 +60,7 @@ def similarity_check(imgs, userId):
             # print('inner loop running')
             
             matches = find_matches( imgs, i1, i2)
-            print(f"matches: {matches}")
+            # print(f"matches: {matches}")
             matchesCount = 0
             for i, (m, n) in enumerate(matches):
                 if m.distance < DEFAULT_FEATURES_DISTANCE * n.distance:

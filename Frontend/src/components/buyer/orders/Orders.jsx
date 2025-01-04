@@ -44,7 +44,7 @@ const Orders = () => {
   if (orders.length === 0) return <div className='flex justify-center items-center min-h-[60vh] mt-[99px] bg-color4'><h1>No orders yet</h1></div>
 
   return (
-    <div className='flex flex-col-reverse min-h-[60vh] mt-[99px] bg-color4'>
+    <div className='flex flex-col min-h-[60vh] mt-[99px] bg-color4'>
       {orders.map((order, index) => {
         return (
           <div key={index} className='flex flex-col w-full gap-2 justify-center items-center'>

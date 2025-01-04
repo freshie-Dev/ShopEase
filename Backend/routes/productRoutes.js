@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs')
 
 // Configure multer to handle FormData with disk storage
 const storage = multer.diskStorage({
@@ -17,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 //Local Imports
-const { Product } = require('../DB.js'); // Product Schema
+const { Product, BlackList } = require('../DB.js'); // Product Schema
 const { verifyToken } = require('../middleware/middleware.js'); // Middleware functions
 
 //! POST A NEW PRODUCT add product
@@ -40,9 +39,9 @@ router.post('/postproduct', upload.single('original_product_image'), verifyToken
             return res.status(201).json({ success: true, message: "Product added successfully", savedProduct });
         } else {
             // Ensure that the file is uploaded
-            // if (!req.file) {
-            //     return res.status(400).json({ success: false, message: 'No file uploaded' });
-            // }
+            if (!req.file) {
+                return res.status(400).json({ success: false, message: 'No file uploaded' });
+            }
 
             // Validate incoming data
             if (!title || !price || !description || !product_image || !attributes || !categories) {
@@ -65,13 +64,12 @@ router.post('/postproduct', upload.single('original_product_image'), verifyToken
                 attributes: parsedAttributes,
                 categories: parsedCategories,
                 customizable,
-                // savedBackendImage: "localhost:3001/" + req.file.path, // Save the path of the uploaded file
-                // savedBackendImageName: req.file.filename
+                savedBackendImage: "localhost:3001/" + req.file.path, // Save the path of the uploaded file
+                savedBackendImageName: req.file.filename
             });
 
             const savedProduct = await newProduct.save();
-            console.log(req.file.path)
-            fs.unlink(req.file.path, (err) => {if(err) console.log(err)})
+            console.log('Product saved:', savedProduct);
             return res.status(201).json({ success: true, message: "Product added successfully" });
         }
 
@@ -81,20 +79,24 @@ router.post('/postproduct', upload.single('original_product_image'), verifyToken
     }
 });
 
-
-
 //! FETCH ALL PRODUCTS all products
 router.route('/all')
     .get(async (req, res) => {
         try {
-            const products = await Product.find();
-            res.status(200).send(products);
+            const blacklistedProducts = await BlackList.find({}, 'deletedProduct');
+            const blacklistedUniqueIds = blacklistedProducts.map(item => item.deletedProduct);
 
+            const products = await Product.find({
+                uniqueIdentifier: { $nin: blacklistedUniqueIds }
+            });
+
+            res.status(200).send(products);
         } catch (error) {
-            console.error('Error while fethcing product:', error);
+            console.error('Error while fetching products:', error);
             res.status(500).json({ success: false, message: 'Internal Server Error' });
         }
     });
+
 //! click single product,
 router.route('/singleproduct/:productId')
     .get(async (req, res) => {
@@ -112,23 +114,30 @@ router.route('/singleproduct/:productId')
 router.route('/productsByUniqueIdentifiers')
     .post(async (req, res) => {
         try {
-            const uniqueIdentifiers = req.body.uniqueIdentifiers; // Get the unique identifiers from the query parameters
-            // console.log(uniqueIdentifiers)
-            // Assuming your Product model has a field named 'uniqueIdentifier'
-            const products = await Product.find({ uniqueIdentifier: { $in: uniqueIdentifiers } });
+            const uniqueIdentifiers = req.body.uniqueIdentifiers; // Get the unique identifiers from the request body
+
+            // Fetch the blacklisted products' uniqueIdentifiers
+            const blacklistedProducts = await BlackList.find({}, 'deletedProduct');
+            const blacklistedUniqueIds = blacklistedProducts.map(item => item.deletedProduct);
+
+            // Filter out blacklisted products from the query
+            const products = await Product.find({
+                uniqueIdentifier: { $in: uniqueIdentifiers, $nin: blacklistedUniqueIds }
+            });
+
             res.status(200).json(products);
         } catch (error) {
             console.error('Error fetching products by unique identifiers:', error);
             res.status(500).json({ success: false, message: 'Internal Server Error' });
         }
-    })
+    });
 
 //! Fetch products for single seller
 router.route('/seller_products')
-    .get(verifyToken, async(req, res) => {
+    .get(verifyToken, async (req, res) => {
         try {
             const sellerId = req.userId;
-            if(!sellerId) {
+            if (!sellerId) {
                 return res.status(401).json({ success: false, message: 'Unauthorized' });
             }
             const products = await Product.find({ userId: sellerId });
@@ -137,45 +146,46 @@ router.route('/seller_products')
             res.status(500).json({ success: false, message: 'Internal Server Error' });
             console.log(error)
         }
-            
+
     })
 
 //! Delete a single product for seller
 router.route('/delete_product/:productId')
- .delete(verifyToken, async (req, res) => {
-    try {
-    console.log("im running")
-      const productId = req.params.productId;
-      const userId = req.userId; 
-  
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-  
-      if (product.userId.toString() !== userId) {
-        return res.status(403).json({ message: 'You are not authorized to delete this product' });
-      }
+    .delete(verifyToken, async (req, res) => {
+        try {
+            console.log("im running")
+            const productId = req.params.productId;
+            const userId = req.userId;
 
-      const deletedProduct = await Product.findByIdAndRemove(productId).select('uniqueIdentifier');
-    //   const deletedProduct = await Product.findById(productId).select('uniqueIdentifier');
-  
-      const updatedProducts = await Product.find({ userId }); 
+            const product = await Product.findById(productId);
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
 
-      res.status(200).json({ message: 'Product deleted successfully', updatedProducts, deletedProduct });
-    } catch (error) {
-      console.error(error);
-      console.log(error)
-      res.status(500).json({ message: 'Error deleting product' });
-    }
-  }) 
-    // Table,
-    // TableBody,
-    // TableCaption,
-    // TableCell,
-    // TableHead,
-    // TableHeader,
-    // TableRow,
+            //   add product.uniqueId to blacklist schema
+            await BlackList.updateOne(
+                {}, // This will add to the first available document in the blacklist collection
+                { $set: { deletedProduct: product.uniqueIdentifier } }, // Set the uniqueId of the deleted product
+                { upsert: true } // If no document exists, create a new one
+            );
+
+
+            if (product.userId.toString() !== userId) {
+                return res.status(403).json({ message: 'You are not authorized to delete this product' });
+            }
+
+            const deletedProduct = await Product.findByIdAndRemove(productId).select('uniqueIdentifier');
+            //   const deletedProduct = await Product.findById(productId).select('uniqueIdentifier');
+
+            const updatedProducts = await Product.find({ userId });
+
+            res.status(200).json({ message: 'Product deleted successfully', updatedProducts, deletedProduct });
+        } catch (error) {
+            console.error(error);
+            console.log(error)
+            res.status(500).json({ message: 'Error deleting product' });
+        }
+    })
 
 
 
